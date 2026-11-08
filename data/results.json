@@ -1,0 +1,915 @@
+{
+ "meta": {
+  "page": "https://maps.tristanhotham.com/asteroid-towns/",
+  "repo": "https://github.com/Tristan-Hotham/asteroid-towns"
+ },
+ "source": {
+  "rows": 22704,
+  "asteroids": 11268,
+  "pairs": 11418,
+  "numbered": 11234,
+  "person": 7463,
+  "place": 2206,
+  "other": 1749,
+  "person_pct": 65.36,
+  "place_pct": 19.32,
+  "other_pct": 15.32,
+  "places_distinct": 2175,
+  "place_asteroids": 2193,
+  "with_site": 2134,
+  "first_year": 1852,
+  "last_year": 2017,
+  "multi_namesake": 133
+ },
+ "kinds": {
+  "town": {
+   "n": 1150,
+   "pct": 52.13,
+   "name": "Towns, cities and villages"
+  },
+  "region": {
+   "n": 191,
+   "pct": 8.66,
+   "name": "Regions, provinces and counties"
+  },
+  "country": {
+   "n": 82,
+   "pct": 3.72,
+   "name": "Countries"
+  },
+  "water": {
+   "n": 140,
+   "pct": 6.35,
+   "name": "Rivers, lakes and seas"
+  },
+  "nature": {
+   "n": 280,
+   "pct": 12.69,
+   "name": "Mountains, islands and other natural features"
+  },
+  "inst": {
+   "n": 309,
+   "pct": 14.01,
+   "name": "Observatories, universities and other institutions"
+  },
+  "other": {
+   "n": 54,
+   "pct": 2.45,
+   "name": "Other places"
+  }
+ },
+ "countries": [
+  {
+   "country": "Japan",
+   "iso3": "JPN",
+   "n": 421,
+   "pct": 19.08,
+   "per_m": 3.33
+  },
+  {
+   "country": "Germany",
+   "iso3": "DEU",
+   "n": 153,
+   "pct": 6.94,
+   "per_m": 1.84
+  },
+  {
+   "country": "Russia",
+   "iso3": "RUS",
+   "n": 137,
+   "pct": 6.21,
+   "per_m": 0.95
+  },
+  {
+   "country": "Italy",
+   "iso3": "ITA",
+   "n": 135,
+   "pct": 6.12,
+   "per_m": 2.24
+  },
+  {
+   "country": "United States",
+   "iso3": "USA",
+   "n": 130,
+   "pct": 5.89,
+   "per_m": 0.4
+  },
+  {
+   "country": "China",
+   "iso3": "CHN",
+   "n": 120,
+   "pct": 5.44,
+   "per_m": 0.09
+  },
+  {
+   "country": "France",
+   "iso3": "FRA",
+   "n": 106,
+   "pct": 4.81,
+   "per_m": 1.58
+  },
+  {
+   "country": "Czech Republic",
+   "iso3": "CZE",
+   "n": 104,
+   "pct": 4.71,
+   "per_m": 9.75
+  },
+  {
+   "country": "Sweden",
+   "iso3": "SWE",
+   "n": 83,
+   "pct": 3.76,
+   "per_m": 8.07
+  },
+  {
+   "country": "Finland",
+   "iso3": "FIN",
+   "n": 65,
+   "pct": 2.95,
+   "per_m": 11.77
+  },
+  {
+   "country": "Ukraine",
+   "iso3": "UKR",
+   "n": 64,
+   "pct": 2.9,
+   "per_m": 1.44
+  },
+  {
+   "country": "Spain",
+   "iso3": "ESP",
+   "n": 49,
+   "pct": 2.22,
+   "per_m": 1.04
+  },
+  {
+   "country": "Belgium",
+   "iso3": "BEL",
+   "n": 43,
+   "pct": 1.95,
+   "per_m": 3.74
+  },
+  {
+   "country": "Switzerland",
+   "iso3": "CHE",
+   "n": 32,
+   "pct": 1.45,
+   "per_m": 3.73
+  },
+  {
+   "country": "Hungary",
+   "iso3": "HUN",
+   "n": 32,
+   "pct": 1.45,
+   "per_m": 3.28
+  },
+  {
+   "country": "Greece",
+   "iso3": "GRC",
+   "n": 27,
+   "pct": 1.22,
+   "per_m": 2.52
+  },
+  {
+   "country": "United Kingdom",
+   "iso3": "GBR",
+   "n": 26,
+   "pct": 1.18,
+   "per_m": 0.39
+  },
+  {
+   "country": "Slovakia",
+   "iso3": "SVK",
+   "n": 25,
+   "pct": 1.13,
+   "per_m": 4.58
+  },
+  {
+   "country": "Netherlands",
+   "iso3": "NLD",
+   "n": 22,
+   "pct": 1.0,
+   "per_m": 1.27
+  },
+  {
+   "country": "Austria",
+   "iso3": "AUT",
+   "n": 22,
+   "pct": 1.0,
+   "per_m": 2.48
+  }
+ ],
+ "per_m": [
+  {
+   "country": "Finland",
+   "n": 65,
+   "per_m": 11.77,
+   "pop_m": 5.5
+  },
+  {
+   "country": "Czech Republic",
+   "n": 104,
+   "per_m": 9.75,
+   "pop_m": 10.7
+  },
+  {
+   "country": "Sweden",
+   "n": 83,
+   "per_m": 8.07,
+   "pop_m": 10.3
+  },
+  {
+   "country": "Croatia",
+   "n": 19,
+   "per_m": 4.67,
+   "pop_m": 4.1
+  },
+  {
+   "country": "Slovakia",
+   "n": 25,
+   "per_m": 4.58,
+   "pop_m": 5.5
+  },
+  {
+   "country": "Lithuania",
+   "n": 12,
+   "per_m": 4.31,
+   "pop_m": 2.8
+  },
+  {
+   "country": "Estonia",
+   "n": 5,
+   "per_m": 3.77,
+   "pop_m": 1.3
+  },
+  {
+   "country": "Belgium",
+   "n": 43,
+   "per_m": 3.74,
+   "pop_m": 11.5
+  },
+  {
+   "country": "Switzerland",
+   "n": 32,
+   "per_m": 3.73,
+   "pop_m": 8.6
+  },
+  {
+   "country": "Latvia",
+   "n": 7,
+   "per_m": 3.66,
+   "pop_m": 1.9
+  },
+  {
+   "country": "Japan",
+   "n": 421,
+   "per_m": 3.33,
+   "pop_m": 126.3
+  },
+  {
+   "country": "Hungary",
+   "n": 32,
+   "per_m": 3.28,
+   "pop_m": 9.8
+  },
+  {
+   "country": "Greece",
+   "n": 27,
+   "per_m": 2.52,
+   "pop_m": 10.7
+  },
+  {
+   "country": "Austria",
+   "n": 22,
+   "per_m": 2.48,
+   "pop_m": 8.9
+  },
+  {
+   "country": "Italy",
+   "n": 135,
+   "per_m": 2.24,
+   "pop_m": 60.3
+  }
+ ],
+ "n_countries": 111,
+ "per_m_rule": "countries with at least 1 million people (Natural Earth POP_EST) and at least 5 place namings",
+ "dist": {
+  "n": 2134,
+  "median": 508,
+  "w50_pct": 19.73,
+  "w100_pct": 27.13,
+  "w10": 204,
+  "same_pct": 58.53,
+  "town_n": 1108,
+  "town_median": 471,
+  "town_w100_pct": 28.7,
+  "town_same_pct": 59.75
+ },
+ "obs": [
+  {
+   "site": "La Silla Observatory",
+   "country": "Chile",
+   "n": 224,
+   "same_pct": 3.6,
+   "median_km": 11631,
+   "w100_pct": 1.8
+  },
+  {
+   "site": "Crimean Astrophysical Observatory",
+   "country": "Ukraine (Crimea)",
+   "n": 164,
+   "same_pct": 25.6,
+   "median_km": 1251,
+   "w100_pct": 9.8
+  },
+  {
+   "site": "Palomar Observatory",
+   "country": "United States",
+   "n": 99,
+   "same_pct": 21.2,
+   "median_km": 9177,
+   "w100_pct": 1.0
+  },
+  {
+   "site": "Kleť Observatory",
+   "country": "Czech Republic",
+   "n": 98,
+   "same_pct": 80.6,
+   "median_km": 101,
+   "w100_pct": 50.0
+  },
+  {
+   "site": "Heidelberg-Königstuhl State Observatory",
+   "country": "Germany",
+   "n": 86,
+   "same_pct": 27.9,
+   "median_km": 795,
+   "w100_pct": 14.0
+  },
+  {
+   "site": "Iso-Heikkilä Observatory",
+   "country": "Finland",
+   "n": 81,
+   "same_pct": 79.0,
+   "median_km": 364,
+   "w100_pct": 13.6
+  },
+  {
+   "site": "Purple Mountain Observatory",
+   "country": "China",
+   "n": 72,
+   "same_pct": 98.6,
+   "median_km": 993,
+   "w100_pct": 5.6
+  },
+  {
+   "site": "Karl Schwarzschild Observatory",
+   "country": "Germany",
+   "n": 63,
+   "same_pct": 74.6,
+   "median_km": 285,
+   "w100_pct": 25.4
+  },
+  {
+   "site": "Ōizumi Observatory",
+   "country": "Japan",
+   "n": 63,
+   "same_pct": 96.8,
+   "median_km": 120,
+   "w100_pct": 41.3
+  },
+  {
+   "site": "Kitami Observatory",
+   "country": "Japan",
+   "n": 51,
+   "same_pct": 96.1,
+   "median_km": 245,
+   "w100_pct": 27.5
+  },
+  {
+   "site": "Union Observatory",
+   "country": "South Africa",
+   "n": 49,
+   "same_pct": 34.7,
+   "median_km": 1471,
+   "w100_pct": 2.0
+  },
+  {
+   "site": "Geisei observatory",
+   "country": "Japan",
+   "n": 48,
+   "same_pct": 85.4,
+   "median_km": 117,
+   "w100_pct": 45.8
+  },
+  {
+   "site": "Anderson Mesa Station",
+   "country": "United States",
+   "n": 44,
+   "same_pct": 22.7,
+   "median_km": 9089,
+   "w100_pct": 4.5
+  },
+  {
+   "site": "Piszkéstető Station",
+   "country": "Hungary",
+   "n": 30,
+   "same_pct": 93.3,
+   "median_km": 174,
+   "w100_pct": 36.7
+  },
+  {
+   "site": "Simeiz Observatory",
+   "country": "Ukraine (Crimea)",
+   "n": 28,
+   "same_pct": 32.1,
+   "median_km": 976,
+   "w100_pct": 21.4
+  }
+ ],
+ "n_obs": 237,
+ "homeliest": [
+  {
+   "site": "Nanyo Observatory",
+   "country": "Japan",
+   "n": 22,
+   "w100_pct": 68.2,
+   "median_km": 35
+  },
+  {
+   "site": "Kleť Observatory",
+   "country": "Czech Republic",
+   "n": 98,
+   "w100_pct": 50.0,
+   "median_km": 101
+  },
+  {
+   "site": "Geisei observatory",
+   "country": "Japan",
+   "n": 48,
+   "w100_pct": 45.8,
+   "median_km": 117
+  },
+  {
+   "site": "Royal Observatory of Belgium",
+   "country": "Belgium",
+   "n": 21,
+   "w100_pct": 42.9,
+   "median_km": 157
+  },
+  {
+   "site": "Ōizumi Observatory",
+   "country": "Japan",
+   "n": 63,
+   "w100_pct": 41.3,
+   "median_km": 120
+  },
+  {
+   "site": "Zimmerwald Observatory",
+   "country": "Switzerland",
+   "n": 20,
+   "w100_pct": 40.0,
+   "median_km": 126
+  }
+ ],
+ "farthest": [
+  {
+   "site": "La Silla Observatory",
+   "country": "Chile",
+   "n": 224,
+   "w100_pct": 1.8,
+   "median_km": 11631
+  },
+  {
+   "site": "Palomar Observatory",
+   "country": "United States",
+   "n": 99,
+   "w100_pct": 1.0,
+   "median_km": 9177
+  },
+  {
+   "site": "Anderson Mesa Station",
+   "country": "United States",
+   "n": 44,
+   "w100_pct": 4.5,
+   "median_km": 9089
+  },
+  {
+   "site": "Union Observatory",
+   "country": "South Africa",
+   "n": 49,
+   "w100_pct": 2.0,
+   "median_km": 1471
+  }
+ ],
+ "discoverers": [
+  {
+   "name": "Eric Walter Elst",
+   "n": 167,
+   "site": "La Silla Observatory",
+   "top": "France",
+   "top_n": 36
+  },
+  {
+   "name": "Nikolai Chernykh",
+   "n": 79,
+   "site": "Crimean Astrophysical Observatory",
+   "top": "Russia",
+   "top_n": 39
+  },
+  {
+   "name": "Purple Mountain Observatory",
+   "n": 75,
+   "site": "Purple Mountain Observatory",
+   "top": "China",
+   "top_n": 74
+  },
+  {
+   "name": "Takao Kobayashi",
+   "n": 63,
+   "site": "Ōizumi Observatory",
+   "top": "Japan",
+   "top_n": 61
+  },
+  {
+   "name": "Uppsala–ESO Survey of Asteroids and Comets",
+   "n": 60,
+   "site": "La Silla Observatory",
+   "top": "Sweden",
+   "top_n": 58
+  },
+  {
+   "name": "Yrjö Väisälä",
+   "n": 56,
+   "site": "Iso-Heikkilä Observatory",
+   "top": "Finland",
+   "top_n": 47
+  },
+  {
+   "name": "Cornelis Johannes van Houten; Ingrid van Houten-Groeneveld; Tom Gehrels",
+   "n": 55,
+   "site": "Palomar Observatory",
+   "top": "Germany",
+   "top_n": 21
+  },
+  {
+   "name": "Tsutomu Seki",
+   "n": 48,
+   "site": "Geisei observatory",
+   "top": "Japan",
+   "top_n": 41
+  },
+  {
+   "name": "Cyril V. Jackson",
+   "n": 44,
+   "site": "Union Observatory",
+   "top": "South Africa",
+   "top_n": 15
+  },
+  {
+   "name": "Freimut Börngen",
+   "n": 43,
+   "site": "Karl Schwarzschild Observatory",
+   "top": "Germany",
+   "top_n": 33
+  }
+ ],
+ "elst": {
+  "n": 167,
+  "fr": 36,
+  "be": 16,
+  "site": "La Silla Observatory"
+ },
+ "observatories_named": {
+  "n": 82,
+  "own": 26
+ },
+ "kind_dist": {
+  "town": 471,
+  "region": 639,
+  "country": 1390,
+  "water": 843,
+  "nature": 389,
+  "inst": 579,
+  "other": 210
+ },
+ "jp": {
+  "n": 421,
+  "home_pct": 92.48,
+  "w100_pct": 46.12,
+  "top_site": "Ōizumi Observatory"
+ },
+ "cz": {
+  "n": 104,
+  "home_pct": 90.38,
+  "w100_pct": 54.81
+ },
+ "it": {
+  "n": 135,
+  "home_pct": 49.23,
+  "w100_pct": 37.69
+ },
+ "se": {
+  "n": 83,
+  "home_pct": 0.0,
+  "w100_pct": 2.86
+ },
+ "fi": {
+  "n": 65,
+  "home_pct": 100.0,
+  "w100_pct": 18.46
+ },
+ "uk": {
+  "n": 26,
+  "places": 26,
+  "towns": 16,
+  "list": [
+   {
+    "asteroid": "758 Mancunia",
+    "place": "Manchester",
+    "kind": "town",
+    "site": "Union Observatory",
+    "year": 1912,
+    "km": 9328
+   },
+   {
+    "asteroid": "1071 Brita",
+    "place": "Great Britain",
+    "kind": "nature",
+    "site": "Simeiz Observatory",
+    "year": 1924,
+    "km": 2811
+   },
+   {
+    "asteroid": "1244 Deira",
+    "place": "Kingdom of Deira",
+    "kind": "country",
+    "site": "Union Observatory",
+    "year": 1932,
+    "km": 9329
+   },
+   {
+    "asteroid": "2531 Cambridge",
+    "place": "Cambridge",
+    "kind": "town",
+    "site": "Anderson Mesa Station",
+    "year": 1980,
+    "km": 8270
+   },
+   {
+    "asteroid": "2830 Greenwich",
+    "place": "Royal Observatory",
+    "kind": "inst",
+    "site": "Anderson Mesa Station",
+    "year": 1980,
+    "km": 8313
+   },
+   {
+    "asteroid": "3009 Coventry",
+    "place": "Coventry",
+    "kind": "town",
+    "site": "Crimean Astrophysical Observatory",
+    "year": 1973,
+    "km": 2719
+   },
+   {
+    "asteroid": "3858 Dorchester",
+    "place": "Dorchester",
+    "kind": "town",
+    "site": "Brorfelde Observatory",
+    "year": 1986,
+    "km": 1084
+   },
+   {
+    "asteroid": "4206 Verulamium",
+    "place": "Verulamium",
+    "kind": "town",
+    "site": "La Silla Observatory",
+    "year": 1986,
+    "km": 11306
+   },
+   {
+    "asteroid": "5677 Aberdonia",
+    "place": "University of Aberdeen",
+    "kind": "inst",
+    "site": "Lowell Observatory",
+    "year": 1987,
+    "km": 7824
+   },
+   {
+    "asteroid": "5805 Glasgow",
+    "place": "Glasgow",
+    "kind": "town",
+    "site": "Lowell Observatory",
+    "year": 1985,
+    "km": 7798
+   },
+   {
+    "asteroid": "6939 Lestone",
+    "place": "Leighton Buzzard",
+    "kind": "town",
+    "site": "Mount Wilson Observatory",
+    "year": 1952,
+    "km": 8672
+   },
+   {
+    "asteroid": "7603 Salopia",
+    "place": "Shropshire",
+    "kind": "region",
+    "site": "Church Stretton",
+    "year": 1995,
+    "km": 11
+   },
+   {
+    "asteroid": "8283 Edinburgh",
+    "place": "Edinburgh",
+    "kind": "town",
+    "site": "Siding Spring Observatory",
+    "year": 1991,
+    "km": 16524
+   },
+   {
+    "asteroid": "8380 Tooting",
+    "place": "Tooting",
+    "kind": "town",
+    "site": "Palomar Observatory",
+    "year": 1992,
+    "km": 8751
+   },
+   {
+    "asteroid": "8837 London",
+    "place": "London",
+    "kind": "town",
+    "site": "La Silla Observatory",
+    "year": 1989,
+    "km": 11305
+   },
+   {
+    "asteroid": "8849 Brighton",
+    "place": "Brighton",
+    "kind": "town",
+    "site": "La Silla Observatory",
+    "year": 1990,
+    "km": 11263
+   },
+   {
+    "asteroid": "9325 Stonehenge",
+    "place": "Stonehenge",
+    "kind": "inst",
+    "site": "La Silla Observatory",
+    "year": 1989,
+    "km": 11186
+   },
+   {
+    "asteroid": "9767 Midsomer Norton",
+    "place": "Midsomer Norton",
+    "kind": "town",
+    "site": "Siding Spring Observatory",
+    "year": 1992,
+    "km": 16796
+   },
+   {
+    "asteroid": "10501 Ardmacha",
+    "place": "Armagh",
+    "kind": "town",
+    "site": "Palomar Observatory",
+    "year": 1987,
+    "km": 8209
+   },
+   {
+    "asteroid": "10502 Armaghobs",
+    "place": "Armagh Observatory",
+    "kind": "inst",
+    "site": "Palomar Observatory",
+    "year": 1987,
+    "km": 8209
+   },
+   {
+    "asteroid": "10515 Old Joe",
+    "place": "Joseph Chamberlain Memorial Clock Tower",
+    "kind": "inst",
+    "site": "Stakenbridge observatory",
+    "year": 1989,
+    "km": 16
+   },
+   {
+    "asteroid": "11626 Church Stretton",
+    "place": "Church Stretton",
+    "kind": "town",
+    "site": "Church Stretton",
+    "year": 1996,
+    "km": 0
+   },
+   {
+    "asteroid": "28220 York",
+    "place": "York",
+    "kind": "town",
+    "site": "Kleť Observatory",
+    "year": 1998,
+    "km": 1203
+   },
+   {
+    "asteroid": "69423 Openuni",
+    "place": "The Open University",
+    "kind": "inst",
+    "site": "Astronomical Observatory of Farra d'Isonzo",
+    "year": 1996,
+    "km": 1238
+   },
+   {
+    "asteroid": "100604 Lundy",
+    "place": "Lundy",
+    "kind": "town",
+    "site": "Royal Observatory of Belgium",
+    "year": 1997,
+    "km": 633
+   },
+   {
+    "asteroid": "129092 Snowdonia",
+    "place": "Snowdon",
+    "kind": "nature",
+    "site": "Haleakalā Observatory",
+    "year": 2004,
+    "km": 11384
+   }
+  ],
+  "home": [
+   "Shropshire",
+   "Joseph Chamberlain Memorial Clock Tower",
+   "Church Stretton"
+  ]
+ },
+ "church_stretton": {
+  "n": 3,
+  "places": [
+   "Church Stretton",
+   "Shropshire"
+  ]
+ },
+ "multi_towns": [
+  {
+   "place": "Ven",
+   "country": "Sweden",
+   "n": 3
+  },
+  {
+   "place": "Osaka",
+   "country": "Japan",
+   "n": 3
+  },
+  {
+   "place": "Leiden",
+   "country": "Netherlands",
+   "n": 2
+  },
+  {
+   "place": "Goldstone Deep Space Communications Complex",
+   "country": "United States",
+   "n": 2
+  },
+  {
+   "place": "Bologna",
+   "country": "Italy",
+   "n": 2
+  },
+  {
+   "place": "Utrecht",
+   "country": "Netherlands",
+   "n": 2
+  },
+  {
+   "place": "Gdańsk",
+   "country": "Poland",
+   "n": 2
+  },
+  {
+   "place": "People's Republic of China",
+   "country": "China",
+   "n": 2
+  }
+ ],
+ "kind_order": [
+  "town",
+  "region",
+  "country",
+  "water",
+  "nature",
+  "inst",
+  "other"
+ ],
+ "kind_cols": {
+  "town": "#A3261B",
+  "region": "#E0A11B",
+  "country": "#7B57A8",
+  "water": "#2F5FA7",
+  "nature": "#55803A",
+  "inst": "#2B2119",
+  "other": "#8C8478",
+  "myth": "#BBB3A6"
+ },
+ "checks": {
+  "person_majority": true,
+  "japan_top": true
+ }
+}

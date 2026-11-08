@@ -1,0 +1,122 @@
+\documentclass[11pt,a4paper]{article}
+\usepackage{fontspec}
+\setmainfont{TeX Gyre Pagella}
+\newfontfamily\headfont{Inter}[UprightFont=*-ExtraBold,BoldFont=*-ExtraBold,Extension=.otf,Path=/usr/share/fonts/opentype/inter/]
+\usepackage[a4paper,margin=2.3cm]{geometry}
+\usepackage{graphicx,booktabs,float,caption,array,xcolor,longtable}
+\usepackage{xurl}
+\usepackage[hidelinks]{hyperref}
+\usepackage{titlesec}
+\usepackage[round]{natbib}
+\usepackage{setspace}
+\setstretch{1.05}
+\renewcommand{\topfraction}{0.9}
+\renewcommand{\bottomfraction}{0.8}
+\renewcommand{\textfraction}{0.1}
+\renewcommand{\floatpagefraction}{0.75}
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{0.55em}
+\titleformat{\section}{\headfont\Large}{\thesection}{0.8em}{}
+\titleformat{\subsection}{\headfont\large}{\thesubsection}{0.8em}{}
+\captionsetup{font=small,labelfont=bf}
+\urlstyle{same}
+\hypersetup{pdftitle={Towns with an asteroid},pdfauthor={Tristan Hotham}}
+
+\begin{document}
+\begin{center}
+{\Large\bfseries Towns with an Asteroid\par}
+\vspace{0.4em}
+{\large The places on Earth that minor planets are named after,\\and the observatories that named them\par}
+\vspace{1.2em}
+{\large Tristan Hotham\par}
+\vspace{0.3em}
+{\small Independent researcher\\
+ORCID: 0000-0003-4931-9349\\
+DOI: https://doi.org/10.5281/zenodo.24052725\par}
+\vspace{0.8em}
+2026
+\end{center}
+
+\begin{quote}
+\small
+\begin{center}\textbf{Abstract}\end{center}
+Discoverers of asteroids propose their names, and many choose places. Using Wikidata's "named after" statements for {{source.asteroids|int}} asteroids, I identify {{source.place|int}} namings of places with coordinates, on {{source.place_asteroids|int}} asteroids ({{source.place_pct|f1}}\% of all namings; {{source.person_pct|f1}}\% honour people) and link each place to the site where its asteroid was discovered. Towns, cities and villages make up {{kinds.town.pct|f1}}\% of the places. Japan has the most ({{countries.0.n|int}}); per head, Finland ({{per_m.0.per_m|f1}} per million people), the Czech Republic ({{per_m.1.per_m|f1}}) and Sweden ({{per_m.2.per_m|f1}}) lead. The median distance from discovery site to named place is {{dist.median|int}} km and {{dist.w100_pct|f1}}\% of places lie within 100 km. Naming geography follows the astronomer: only {{obs.0.same_pct|f1}}\% of the places named from La Silla in Chile are Chilean, while Kle\v{t} Observatory named {{obs.3.n|int}} places, {{obs.3.same_pct|f1}}\% of them Czech and {{homeliest.1.w100_pct|f1}}\% within 100 km, and {{jp.home_pct|f1}}\% of Japanese places were named from Japanese observatories. I describe the data, its incompleteness and the classification, and publish the linked tables and an interactive map.
+
+\textbf{Keywords:} minor planets; asteroids; nomenclature; toponymy; commemoration; amateur astronomy; Wikidata; open data; mapping
+\end{quote}
+
+\section{Introduction}
+Once an asteroid's orbit is secure it receives a number, and its discoverer may propose a name, which the International Astronomical Union's Working Group Small Bodies Nomenclature considers and publishes \citep{mpc,wgsbn}. The result is a large, informal archive of what astronomers chose to remember: colleagues and family, scientists and artists, and places. Many place names are personal. An observatory names its own town and the villages around it; an astronomer abroad names the town where they grew up.
+
+This paper maps that naming geography with open data. Wikidata \citep{wikidata} records, for many asteroids, what they are named after, where they were discovered and by whom. Joining the two gives each named place a line to the observatory that found its asteroid. I ask which places have an asteroid, which countries have most, who named them, and how close to home.
+
+\section{Data}
+A single query of Wikidata through QLever \citep{qlever} returned every item that is an asteroid (an instance of asteroid or of a subclass) with a "named after" (P138) statement, with its minor planet number, discoverer (P61), discovery site (P65) and its coordinates and country, discovery date, and the namesake's type, coordinates and country. The query returned {{source.rows|int}} rows, one per discoverer and type, describing {{source.asteroids|int}} asteroids and {{source.pairs|int}} asteroid and namesake pairs (``namings''); {{source.multi_namesake|int}} asteroids have more than one namesake. Wikidata is released under CC0. Natural Earth \citep{naturalearth} gives modern countries and their population estimates.
+
+Wikidata does not record the namesake of every named minor planet, and I have not compared these records with the Minor Planet Center's complete list of names. The data are therefore the subset of named minor planets that Wikidata links to a namesake, not all named minor planets, and its coverage may differ by country and period.
+
+\section{Methods}
+\subsection{Places and kinds}
+A namesake is a person if Wikidata says it is human (Q5); otherwise it is a place if it has coordinates and is not mythical or fictional. Namesakes that have coordinates but are not places are also ``other'': any whose Wikidata types include a language, a taxon, a ship, a battle or other event, a television programme, a people or ethnic group, a dynasty or a troupe; bodies whose types are all organisational (an agency, society, ministry, survey or league with no site of its own); and two cases found by hand (a star party and a government department typed as an observatory and a region). I read the whole resulting list of places by eye. Everything else (gods, works, organisations without coordinates) is ``other'' too. Places were sorted into kinds by keyword rules applied, in order, to all of their Wikidata types: rivers, lakes and seas; towns, cities and villages; countries (exact types such as ``sovereign state'' or ``historical country''); observatories, universities and other institutions; mountains, islands and other natural features; and regions, provinces and counties. A small remainder is ``other places''.
+
+\subsection{Countries, distances and home}
+Each place and each discovery site is given the modern country Wikidata records for it (P17) when that names exactly one modern country and the point lies within about 30 km of that country's Natural Earth outline, which settles border towns such as Passau, Konstanz, Gorizia and Tornio; otherwise (no country, several, or only a historical state) it is placed in a Natural Earth country by its coordinates. Continents are assigned to no country. Crimea, where Natural Earth's default view places it in Russia, is counted as Ukraine. Per head rates use Natural Earth's population estimates (mostly for 2019) and are reported for countries of at least a million people with five or more place namings. Populations are Natural Earth country figures, so Hong Kong and other territories count separately. Distances are great circle distances between the discovery site and the place's single point, so they are rough for regions, rivers and countries. A place is ``home'' if it is in the same country as the discovery site.
+
+\section{Results}
+\subsection{What is named}
+Of the {{source.pairs|int}} namings, {{source.person|int}} ({{source.person_pct|f1}}\%) honour people, {{source.place|int}} ({{source.place_pct|f1}}\%) places with coordinates and {{source.other|int}} ({{source.other_pct|f1}}\%) other things (Figure~\ref{fig:kinds}). The {{source.place|int}} place namings cover {{source.places_distinct|int}} distinct places: {{kinds.town.n|int}} namings of towns, cities and villages, {{kinds.inst.n|int}} of institutions, {{kinds.nature.n|int}} of natural features, {{kinds.region.n|int}} of regions, {{kinds.water.n|int}} of rivers and lakes and {{kinds.country.n|int}} of countries. Figure~\ref{fig:world} maps them all.
+
+\begin{figure}[tbp]\centering\includegraphics[width=\textwidth]{f_world.png}
+\caption{Every place with an asteroid in Wikidata, by kind, with great circle lines to the discovery sites.}\label{fig:world}\end{figure}
+\begin{figure}[tbp]\centering\includegraphics[width=\textwidth]{f_kinds.png}
+\caption{People, places and other namesakes (top) and the kinds of place (bottom).}\label{fig:kinds}\end{figure}
+
+\subsection{Countries}
+Places in {{n_countries|int}} modern countries have an asteroid. Japan leads with {{countries.0.n|int}} ({{countries.0.pct|f1}}\%), followed by Germany ({{countries.1.n|int}}), Russia ({{countries.2.n|int}}), Italy ({{countries.3.n|int}}) and the United States ({{countries.4.n|int}}) (Table~\ref{tab:cty}, Figure~\ref{fig:cty}). Per head, Finland, the Czech Republic and Sweden lead, each with long traditions of asteroid discovery.
+
+{{TABLE_CTY}}
+
+\begin{figure}[tbp]\centering\includegraphics[width=\textwidth]{f_countries.png}
+\caption{Place namings by country, in total and per million people.}\label{fig:cty}\end{figure}
+
+\subsection{Who named them}
+The {{n_obs|int}} discovery sites are led by La Silla ({{obs.0.n|int}} place namings), the Crimean Astrophysical Observatory ({{obs.1.n|int}}) and Palomar ({{obs.2.n|int}}) (Table~\ref{tab:obs}, Figure~\ref{fig:obs}). Large observatories host visiting astronomers, and their names travel with them: {{obs.0.same_pct|f1}}\% of La Silla's places are in Chile. The Belgian astronomer Eric Elst, the most prolific namer of places in the data ({{elst.n|int}}), worked at La Silla and named {{elst.fr|int}} places in France and {{elst.be|int}} in Belgium; the Uppsala survey at La Silla named Swedish places, so that none of Sweden's {{se.n|int}} places was named from Sweden. Finland is the opposite: all {{fi.n|int}} of its places were named from Finnish sites, most by Yrj\"o V\"ais\"al\"a's observatory at Turku. Purple Mountain Observatory named Chinese places almost exclusively ({{obs.6.same_pct|f1}}\%).
+
+{{TABLE_OBS}}
+
+\begin{figure}[tbp]\centering\includegraphics[width=\textwidth]{f_observatories.png}
+\caption{The twelve discovery sites with the most place namings, and the share in their own country.}\label{fig:obs}\end{figure}
+
+\subsection{Close to home}
+The distribution of distances is wide (Figure~\ref{fig:dist}). The median is {{dist.median|int}} km; {{dist.w100_pct|f1}}\% of places lie within 100 km of the discovery site, and {{dist.w10|int}} within 10 km, many of them observatories named after themselves ({{observatories_named.own|int}} of the {{observatories_named.n|int}} asteroids named after observatories or telescopes were found there). {{dist.same_pct|f1}}\% of places are in the discovery site's country. The most local namers are small observatories with a resident team (Figure~\ref{fig:home}): Kle\v{t} in South Bohemia ({{homeliest.1.w100_pct|f1}}\% within 100 km), and Japanese sites such as Nanyo ({{homeliest.0.w100_pct|f1}}\%) and Geisei ({{homeliest.2.w100_pct|f1}}\%). Of the places in Japan, {{jp.home_pct|f1}}\% were named from Japanese sites and {{jp.w100_pct|f1}}\% from within 100 km; for the Czech Republic the figures are {{cz.home_pct|f1}}\% and {{cz.w100_pct|f1}}\%, and for Italy {{it.home_pct|f1}}\% and {{it.w100_pct|f1}}\%.
+
+\begin{figure}[tbp]\centering\includegraphics[width=\textwidth]{f_distance.png}
+\caption{Distance from discovery site to named place.}\label{fig:dist}\end{figure}
+\begin{figure}[tbp]\centering\includegraphics[width=\textwidth]{f_home.png}
+\caption{Local naming: places named from Kle\v{t} Observatory, and places in Japan named from Japanese observatories.}\label{fig:home}\end{figure}
+
+\subsection{The United Kingdom}
+{{uk.n|int}} asteroids are named after places in the United Kingdom ({{uk.towns|int}} towns and cities). Nearly all were discovered abroad. The exceptions are an amateur observatory at Church Stretton, Shropshire, which found the asteroids named after Church Stretton and Shropshire (Salopia), and one at Stakenbridge, which found Old Joe, named after the University of Birmingham's clock tower (Table~\ref{tab:uk}).
+
+{{TABLE_UK}}
+
+\section{Limitations}
+First, coverage: Wikidata records the namesake of only part of the named minor planets, and the share may vary by period, country and discoverer. Second, the observatory is the place of discovery, not certainly the place of naming, and names are sometimes proposed by people other than the discoverer. Third, kinds come from keyword rules on Wikidata's types and are approximate. Fourth, regions, rivers and countries are single points, so their distances are rough. Fifth, modern borders are applied throughout, and Crimea is assigned to Ukraine.
+
+\section{Conclusion}
+About one asteroid in five with a recorded namesake honours a place. Japan's dense network of amateur and municipal observatories has put more of its towns in the sky than any other country, and small European observatories such as Kle\v{t} have named their own valleys. Large international observatories spread names around the world, carried by visiting astronomers. Linking open data on asteroids and places makes this naming geography visible and checkable.
+
+\section*{Data and code availability}
+The interactive map is at \url{{{meta.page}}}. Data and code are at \url{{{meta.repo}}} and archived with this paper at https://doi.org/10.5281/zenodo.24052725. Derived data and text are released under CC BY 4.0 (the Wikidata source is CC0); code under the MIT licence.
+
+\section*{AI statement}
+I wrote the text, with drafting and editing assistance from Claude (Anthropic), which also helped prepare the analysis code. I reviewed and checked all text and results.
+
+\begin{thebibliography}{9}
+\bibitem[Bast and Buchhold(2017)]{qlever} Bast, H. and Buchhold, B. (2017) QLever: a query engine for efficient SPARQL+Text search. In \textit{Proceedings of the 2017 ACM Conference on Information and Knowledge Management (CIKM)}, 647 to 656.
+\bibitem[Minor Planet Center(2026)]{mpc} Minor Planet Center (2026) How are asteroids named? \url{https://docs.minorplanetcenter.net/mpc-ops-docs/designations/how-asteroids-are-named/}
+\bibitem[Natural Earth(2026)]{naturalearth} Natural Earth (2026) Admin 0 countries, 1:10m. Public domain. \url{https://www.naturalearthdata.com/}
+\bibitem[Vrande\v{c}i\'c and Kr\"otzsch(2014)]{wikidata} Vrande\v{c}i\'c, D. and Kr\"otzsch, M. (2014) Wikidata: a free collaborative knowledgebase. \textit{Communications of the ACM} 57(10), 78 to 85.
+\bibitem[WGSBN(2026)]{wgsbn} IAU Working Group Small Bodies Nomenclature (2026) WGSBN. \url{https://www.wgsbn-iau.org/}
+\end{thebibliography}
+\end{document}

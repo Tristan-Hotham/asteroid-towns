@@ -1,0 +1,350 @@
+<!doctype html>
+<html lang="en-GB">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Towns with an asteroid</title>
+<meta name="description" content="{{source.place_asteroids|int}} asteroids named after places on Earth, mapped with a line from the observatory that found each one: who named which towns, rivers and mountains, and how close to home. From Wikidata.">
+<meta property="og:title" content="Towns with an asteroid: the places on Earth that have a minor planet">
+<meta property="og:description" content="Japan has {{countries.0.n|int}} asteroids named after its places; Finland has the most per head. Half of the Czech observatory Kleť's places lie within 100 km of its dome.">
+<meta property="og:image" content="https://maps.tristanhotham.com/asteroid-towns/header.png">
+<meta property="og:url" content="https://maps.tristanhotham.com/asteroid-towns/">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600;9..144,800;9..144,900&family=IBM+Plex+Mono:wght@400;500&family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,600;1,8..60,400&family=MedievalSharp&display=swap">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/maplibre-gl@4.7.1/dist/maplibre-gl.css">
+<style>
+/*CSS*/
+#map{height:680px}
+@media (max-width:900px){#map{height:min(70vh,560px)}}
+.mapgrid{display:grid;grid-template-columns:minmax(0,1fr) 300px;gap:12px;align-items:start}
+@media (max-width:900px){.mapgrid{grid-template-columns:1fr}}
+.side{background:var(--card);border:1px solid var(--border);padding:12px;font:400 13px/1.45 var(--mono);max-height:680px;overflow:auto}
+@media (max-width:900px){.side{max-height:none}}
+.side h4{font:500 11px/1 var(--mono);letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin:12px 0 8px}
+.side h4:first-child{margin-top:2px}
+.side .big{font:800 24px/1.1 var(--display);margin:2px 0 4px}
+.side ul{margin:4px 0 8px;padding-left:0;list-style:none}
+.side li{margin:4px 0}
+.side .k{color:var(--muted)}
+.side .go{color:var(--hot)}
+.star{display:inline-block;width:12px;height:12px;vertical-align:-1px;margin-right:5px}
+</style>
+</head>
+<body>
+<div class="wrap">
+<div class="kicker"><b>Data study</b><span>Space and places</span><span>Minor planets named after Earth</span></div>
+<header class="hero">
+  <h1>Towns with an <span class="a">asteroid</span></h1>
+  <svg class="mark" viewBox="0 0 120 120" aria-hidden="true"><g id="heroMark"></g></svg>
+  <p class="dek">Somewhere in the asteroid belt there is a rock called London, another called Brighton and one called Midsomer Norton. I mapped {{source.place_asteroids|int}} asteroids ({{source.place|int}} namings) named after places on Earth, each with a line to the observatory that found it, to see which towns have one, who named them, and from how far away.</p>
+</header>
+<div class="byline">Dr Tristan Hotham · Independent researcher · 2026 · Data: Wikidata (CC0); map: OpenStreetMap via OpenFreeMap, Natural Earth</div>
+
+<div class="stats">
+  <div><b>{{countries.0.n|int}}</b><span>asteroids named after places in Japan, the most of any country</span></div>
+  <div><b>{{per_m.0.per_m|f1}}</b><span>per million people in Finland, the most per head</span></div>
+  <div><b>{{homeliest.1.w100_pct|pc}}</b><span>of the places named from Kleť Observatory lie within 100 km of it</span></div>
+  <div><b>{{uk.n|int}}</b><span>asteroids named after places in the United Kingdom</span></div>
+</div>
+
+<p class="lede">When you discover an asteroid you get to suggest its name. Most discoverers honour people: colleagues, family, scientists, musicians. But about one asteroid in five with a recorded namesake honours a place, and that is where this map comes in. Towns and villages, rivers and mountains, provinces and countries, universities and observatories all have their rock in the sky, chosen by an astronomer somewhere else on Earth, and approved by the International Astronomical Union.</p>
+<p>Wikidata, the open database behind Wikipedia, records what {{source.asteroids|int}} asteroids are named after. {{source.place|int}} of those namings are of places with coordinates, {{source.place_pct|pc}} of the total; {{source.person_pct|pc}} are of people and the rest of other things, from gods and novels to bands and locomotives. For each place I know which observatory found the asteroid, so I can draw the line between them: the naming geography of the solar system.</p>
+
+<h2><span class="n">01 · The map</span>Every place with an asteroid</h2>
+<p>Each dot is a place, coloured by what kind of place it is. Black stars are the observatories that found the asteroids; click one to see every place it named, or click a place to see its asteroid and the line back to where it was found.</p>
+<div class="bleed" id="atlas">
+<div class="controls">
+  <div class="scrollrow" id="kindRow"><span class="ctl-l">Show</span></div>
+  <div class="srch"><input type="search" id="q" placeholder="Find a town, asteroid or observatory" aria-label="Find a town, asteroid or observatory" autocomplete="off"><ul class="sug" id="sug" role="listbox"></ul></div>
+</div>
+<div class="mapgrid">
+  <div><div id="map" class="lmap" role="application" aria-label="Map of places on Earth with an asteroid named after them"><div class="mapnote" id="note"></div></div>
+  <div class="legend" id="legend"></div></div>
+  <div class="side" id="side" aria-live="polite"></div>
+</div>
+<p class="src">Places from Wikidata's "named after" statements for asteroids, at the coordinates Wikidata gives the place (a region or river is a single point). Lines join each place to the discovery site of its asteroid, along the great circle. Mythical and fictional places are left out. Earth: the Inked World map style on OpenStreetMap data via OpenFreeMap.</p>
+</div>
+
+<h2><span class="n">02 · People, places and things</span>One in five is a place</h2>
+<p>Of the {{source.pairs|int}} namings, {{source.person|int}} ({{source.person_pct|pc}}) are of people, {{source.place|int}} ({{source.place_pct|pc}}) of places with coordinates and {{source.other|int}} ({{source.other_pct|pc}}) of other things. Among the places, towns, cities and villages lead with {{kinds.town.n|int}} ({{kinds.town.pct|pc}}), then observatories, universities and other institutions ({{kinds.inst.n|int}}), mountains, islands and other natural features ({{kinds.nature.n|int}}), regions ({{kinds.region.n|int}}), rivers and lakes ({{kinds.water.n|int}}) and countries ({{kinds.country.n|int}}).</p>
+<div class="figure"><p class="fig-h">What the places are</p><p class="fig-sub">Place namings by kind. Hover a block.</p><div class="chart" id="kindChart"></div></div>
+
+<h2><span class="n">03 · Countries</span>Japan has the most, Finland the most per head</h2>
+<p>By modern country, Japan has {{countries.0.n|int}} place namings ({{countries.0.pct|pc}}), far ahead of Germany ({{countries.1.n|int}}), Russia ({{countries.2.n|int}}), Italy ({{countries.3.n|int}}) and the United States ({{countries.4.n|int}}). Per head the leaders are smaller countries with busy asteroid hunters: Finland ({{per_m.0.per_m|f1}} per million people), the Czech Republic ({{per_m.1.per_m|f1}}) and Sweden ({{per_m.2.per_m|f1}}). Places in {{n_countries|int}} countries have an asteroid in all.</p>
+<div class="figure"><p class="fig-h">Countries with the most places in the sky</p><p class="fig-sub">Left: place namings by modern country. Right: per million people, for countries of at least a million with five or more. Hover a bar.</p><div class="chart" id="ctyChart"></div></div>
+
+<h2><span class="n">04 · Who named them</span>Telescopes in Chile, names from Belgium</h2>
+<p>The {{n_obs|int}} observatories behind these namings are led by La Silla in Chile ({{obs.0.n|int}} places), the Crimean Astrophysical Observatory ({{obs.1.n|int}}) and Palomar in California ({{obs.2.n|int}}). But a big telescope does not name its neighbours. Only {{obs.0.same_pct|pc}} of La Silla's places are in Chile: the names follow the astronomers, not the telescope. The Belgian Eric Elst, the most prolific namer of places here with {{elst.n|int}}, worked at La Silla and named {{elst.fr|int}} places in France and {{elst.be|int}} in Belgium; the Uppsala survey at La Silla named Swedish places. Purple Mountain Observatory in China named Chinese places almost without exception ({{obs.6.same_pct|pc}}).</p>
+<div class="figure"><p class="fig-h">The observatories that named the most places</p><p class="fig-sub">Place namings by discovery site; share in the observatory's own country; median distance to the place; share within 100 km. Click a row to see its lines on the map.</p><div class="tablebox"><table class="tbl" id="obsTable"></table></div></div>
+
+<h2><span class="n">05 · Close to home</span>Kleť and the Japanese amateurs</h2>
+<p>Half of all places lie within {{dist.median|int}} km of the observatory that found their asteroid, and {{dist.w100_pct|pc}} within 100 km. The most local namers are small observatories run by devoted amateurs and their professional neighbours. Kleť Observatory, on the mountain of Kleť in South Bohemia, named {{obs.3.n|int}} places, {{obs.3.same_pct|pc}} of them Czech and {{homeliest.1.w100_pct|pc}} within 100 km. Japan's amateur observatories did the same for Japanese towns: {{jp.home_pct|pc}} of the asteroids named after places in Japan were found in Japan, and {{jp.w100_pct|pc}} within 100 km of the place. For the Czech Republic it is {{cz.home_pct|pc}} and {{cz.w100_pct|pc}}.</p>
+<div class="figure"><p class="fig-h">How far from the observatory</p><p class="fig-sub">Distance from the discovery site to the named place, all place namings with both positions. Hover a column.</p><div class="chart" id="distChart"></div></div>
+<p class="pull">Big telescopes name the world. Small ones name the next valley.</p>
+<p>{{observatories_named.n|int}} asteroids are named after observatories and telescopes themselves, {{observatories_named.own|int}} of them after the very observatory that found them.</p>
+
+<h2><span class="n">06 · Britain</span>From London to Midsomer Norton</h2>
+<p>{{uk.n|int}} asteroids in Wikidata are named after places in the United Kingdom, {{uk.towns|int}} of them towns and cities. Almost all were found abroad, at observatories such as La Silla, Palomar and Siding Spring. The exceptions are home-grown: an amateur observatory at Church Stretton in Shropshire found the asteroids named Church Stretton and Salopia, the old name for Shropshire, and a small observatory at Stakenbridge found Old Joe, named after the clock tower of the University of Birmingham. Click a row to find the place.</p>
+<div class="figure"><p class="fig-h">Every British place with an asteroid in Wikidata</p><p class="fig-sub">By minor planet number. Click a row.</p><div class="tablebox"><table class="tbl" id="ukTable"></table></div></div>
+
+<h2><span class="n">07 · How I did this</span>Methods and caveats</h2>
+<p><b>Data.</b> Everything comes from Wikidata (CC0), queried through QLever: every asteroid with a "named after" (P138) statement, with its number, discoverer, discovery site and date, and the namesake's type, coordinates and country. I removed the duplicate rows the query makes for each discoverer and type. A namesake that is not a person and has coordinates counts as a place, unless it is mythical or fictional or not a place at all (languages, species, ships, battles and other events, peoples, television programmes, and organisations with no site of their own); I checked the whole list by eye. Kinds of place come from keyword rules on the namesake's Wikidata types. Countries are modern: the country Wikidata records for the place, or Natural Earth's borders where Wikidata is silent, names several countries or names a historical state; Crimea is counted as part of Ukraine; per head uses Natural Earth's population estimates. Distances are great circle distances between the discovery site and the place's point.</p>
+<p><b>Caveats.</b> This covers only the named minor planets that Wikidata links to a namesake, not all named minor planets; how complete it is varies by country and era, and I have not compared it with the Minor Planet Center's full list of names. The discoverer usually proposes the name, but not always, so the observatory is the place of discovery rather than certainly the place of naming. A region, river or country is reduced to one point, so its distance is rough. Asteroid names are Wikidata's multilingual label, or the English label, or a label in another language.</p>
+<details><summary>Sources and licences</summary>
+<ul>
+<li>Wikidata contributors, Wikidata (CC0), queried with QLever (University of Freiburg). Vrandečić, D. and Krötzsch, M. (2014) Wikidata: a free collaborative knowledgebase. Communications of the ACM 57(10), 78 to 85.</li>
+<li>Minor Planet Center, <a href="https://docs.minorplanetcenter.net/mpc-ops-docs/designations/how-asteroids-are-named/">How are asteroids named?</a> IAU Working Group Small Bodies Nomenclature, <a href="https://www.wgsbn-iau.org/">wgsbn-iau.org</a>.</li>
+<li>Natural Earth (public domain) for countries and population estimates (mostly for 2019). Map: the Inked World style on OpenStreetMap data (ODbL) via OpenFreeMap.</li>
+</ul></details>
+
+<div class="cta"><a class="p" href="https://doi.org/10.5281/zenodo.24052725">Read the paper</a><a href="https://github.com/Tristan-Hotham/asteroid-towns">Data and code</a><a href="https://blog.tristanhotham.com/2026/10/31/asteroid-towns/">Blog post</a></div>
+
+<footer>
+<p>Dr Tristan Hotham, Independent researcher. ORCID <a href="https://orcid.org/0000-0003-4931-9349">0000-0003-4931-9349</a>.</p>
+<p>Cite as: Hotham, T. (2026) Towns with an asteroid: the places on Earth that minor planets are named after. Zenodo. <a href="https://doi.org/10.5281/zenodo.24052725">https://doi.org/10.5281/zenodo.24052725</a></p>
+<p>Data: Wikidata (CC0). Text, figures and derived data CC BY 4.0; code MIT. Map data © OpenStreetMap contributors (ODbL); Natural Earth.</p>
+<p>I wrote the text, with drafting and editing assistance from Claude (Anthropic), which also helped prepare the analysis code. I reviewed and checked all text and results.</p>
+</footer>
+</div>
+<div class="tip" id="tip"></div>
+<button class="btn theme" id="theme" aria-label="Toggle dark mode">◐</button>
+<script src="https://cdn.jsdelivr.net/npm/maplibre-gl@4.7.1/dist/maplibre-gl.js"></script>
+<script src="js/curated.js?v=1"></script>
+<script src="js/ink-palette.js?v=1"></script>
+<script src="js/ink-icons.js?v=1"></script>
+<script src="js/ink-houses.js?v=1"></script>
+<script src="js/ink-map.js?v=1"></script>
+<script src="js/ink-extras.js?v=1"></script>
+<script>
+const R = /*RESULTS*/;
+const fmt = n => n == null || n === "" ? "n/a" : Math.round(n).toLocaleString("en-GB");
+const esc = s => String(s ?? "").replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+const $ = id => document.getElementById(id);
+const tip = $("tip");
+function showTip(h, x, y) { tip.innerHTML = h; tip.style.display = "block"; const w = tip.offsetWidth; x = Math.max(w / 2 + 8, Math.min(innerWidth - w / 2 - 8, x)); tip.style.left = x + scrollX + "px"; tip.style.top = y + scrollY + "px"; }
+function hideTip() { tip.style.display = "none"; }
+document.addEventListener("click", e => { if (!e.target.closest("svg")) hideTip(); });
+const NS = "http://www.w3.org/2000/svg";
+const el = (t, a, p) => { const e = document.createElementNS(NS, t); for (const k in a) e.setAttribute(k, a[k]); if (p) p.appendChild(e); return e; };
+const lbl = (svg, x, y, s, cls = "lab", anchor = "start") => { const t = el("text", { x, y, class: cls, "text-anchor": anchor }, svg); t.textContent = s; return t; };
+const hov = (n, h) => { n.addEventListener("mousemove", ev => showTip(h, ev.clientX, ev.clientY)); n.addEventListener("mouseleave", hideTip); n.addEventListener("click", ev => { ev.stopPropagation(); showTip(h, ev.clientX, ev.clientY); }); };
+const redraws = [];
+function resp(box, render) { let last = 0; const go = force => { const w = Math.max(280, Math.round(box.clientWidth)); if (!force && Math.abs(w - last) < 4) return; last = w; box.innerHTML = ""; render(w, w < 560); }; new ResizeObserver(() => go()).observe(box); go(); redraws.push(() => go(true)); }
+const isDark = () => { const r = document.documentElement; return r.dataset.theme ? r.dataset.theme === "dark" : matchMedia("(prefers-color-scheme: dark)").matches; };
+const css = v => getComputedStyle(document.documentElement).getPropertyValue(v).trim();
+const KO = R.kind_order, KC = R.kind_cols, KN = Object.fromEntries(KO.map(k => [k, R.kinds[k].name]));
+const STAR = (c = "#2B2119", s = 12) => `<svg class="star" viewBox="0 0 12 12" width="${s}" height="${s}"><path d="M6 .6l1.6 3.4 3.7.4-2.8 2.5.8 3.7L6 8.7 2.7 10.6l.8-3.7L.7 4.4l3.7-.4z" fill="${c}" stroke="#F6EED8" stroke-width=".8"/></svg>`;
+
+(function () {
+  const g = $("heroMark");
+  el("path", { d: "M20 30 C40 18 70 14 96 22", stroke: "currentColor", "stroke-width": 1.4, fill: "none", "stroke-dasharray": "3 4" }, g);
+  el("path", { d: "M84 14 l9 2 6 8 -3 9 -10 3 -8 -6 -1 -9z", fill: "#B9AC8E", stroke: "currentColor", "stroke-width": 2 }, g);
+  el("circle", { cx: 88, cy: 24, r: 2.2, fill: "none", stroke: "currentColor", "stroke-width": 1.2 }, g);
+  el("path", { d: "M10 104 Q60 92 110 104", stroke: "currentColor", "stroke-width": 2.6, fill: "none" }, g);
+  el("path", { d: "M26 98 v-14 l6 -6 6 6 v14 M44 99 v-20 h10 v20 M60 98 v-12 l8 -8 8 8 v12", stroke: "currentColor", "stroke-width": 2, fill: "#EFE2BF" }, g);
+  el("path", { d: "M64 76 Q76 40 88 30", stroke: "#A3261B", "stroke-width": 1.8, fill: "none", "stroke-dasharray": "4 3" }, g);
+  el("circle", { cx: 64, cy: 78, r: 3.2, fill: "#A3261B" }, g);
+})();
+
+/* ---------- charts ---------- */
+function kindChart() {
+  resp($("kindChart"), (w, sm) => {
+    const ks = KO.filter(k => R.kinds[k].n), tot = ks.reduce((a, k) => a + R.kinds[k].n, 0), per = sm ? 2 : 3, h = 54 + Math.ceil(ks.length / per) * 20;
+    const svg = el("svg", { viewBox: `0 0 ${w} ${h}`, role: "img", "aria-label": "Stacked bar of place namings by kind" }, $("kindChart")); let x = 0;
+    ks.forEach(k => { const v = R.kinds[k].n, ww = w * v / tot; const r = el("rect", { x, y: 4, width: Math.max(1, ww - 1), height: 36, fill: KC[k] }, svg);
+      if (ww > 40) lbl(svg, x + 5, 27, Math.round(100 * v / tot) + "%", "lab s w"); hov(r, `<b>${esc(KN[k])}</b><br>${fmt(v)} namings, ${R.kinds[k].pct.toFixed(1)}%`); x += ww; });
+    ks.forEach((k, i) => { const cx = (i % per) * (w / per), cy = 58 + Math.floor(i / per) * 20; el("rect", { x: cx, y: cy - 9, width: 11, height: 11, fill: KC[k] }, svg); lbl(svg, cx + 16, cy, KN[k].split(",")[0].replace("Observatories", "Institutions"), "lab s"); });
+  });
+}
+function hbars(box, panels, title) {
+  resp(box, (w, sm) => {
+    const rh = 22, lw = 112, two = !sm, rows = Math.max(...panels.map(p => p.rows.length));
+    const h = two ? rows * rh + 34 : panels.reduce((a, p) => a + p.rows.length * rh + 40, 0);
+    const svg = el("svg", { viewBox: `0 0 ${w} ${h}`, role: "img", "aria-label": title }, box);
+    panels.forEach((p, k) => { const x0 = two ? k * w / 2 + lw : lw, x1 = two ? (k + 1) * w / 2 - 50 : w - 50, y0 = two ? 0 : panels.slice(0, k).reduce((a, q) => a + q.rows.length * rh + 40, 0);
+      lbl(svg, x0 - lw, y0 + 15, p.title, "lab b"); const mx = Math.max(...p.rows.map(r => r.v));
+      p.rows.forEach((r, i) => { const y = y0 + 24 + i * rh, ww = (x1 - x0) * r.v / mx;
+        lbl(svg, x0 - 6, y + 14, r.label, "lab s", "end"); const b = el("rect", { x: x0, y: y + 3, width: Math.max(1, ww), height: rh - 7, fill: p.c, rx: 2 }, svg);
+        lbl(svg, x0 + ww + 5, y + 14, r.txt, "lab s b"); hov(b, r.tip); }); });
+  });
+}
+const short = c => c.replace("United States", "US").replace("United Kingdom", "UK").replace("Czech Republic", "Czechia");
+function ctyChart() {
+  hbars($("ctyChart"), [{ title: "Place namings", c: "#A3261B", rows: R.countries.slice(0, 12).map(r => ({ label: short(r.country), v: r.n, txt: fmt(r.n), tip: `<b>${esc(r.country)}</b><br>${r.n} places, ${r.pct.toFixed(1)}%<br>${r.per_m.toFixed(2)} per million people` })) },
+    { title: "Per million people", c: "#2F5FA7", rows: R.per_m.slice(0, 12).map(r => ({ label: short(r.country), v: r.per_m, txt: r.per_m.toFixed(1), tip: `<b>${esc(r.country)}</b><br>${r.n} places, ${r.pop_m} million people` })) }], "Bar charts of place namings by country, in total and per million people");
+}
+function distChart() {
+  resp($("distChart"), (w, sm) => {
+    const edges = [0, 10, 25, 50, 100, 250, 500, 1000, 2500, 5000, 10000, 20100], lab = ["<10", "10", "25", "50", "100", "250", "500", "1,000", "2,500", "5,000", "10,000+"];
+    const n = new Array(edges.length - 1).fill(0); ROWS.forEach(r => { if (r.km == null) return; for (let i = 0; i < n.length; i++) if (r.km >= edges[i] && r.km < edges[i + 1]) { n[i]++; break; } });
+    const h = 230, m = { l: 36, b: 40, t: 10 }, svg = el("svg", { viewBox: `0 0 ${w} ${h}`, role: "img", "aria-label": "Histogram of distances from observatory to named place" }, $("distChart"));
+    const mx = Math.max(...n), cw = (w - m.l - 4) / n.length;
+    for (let v = 0; v <= mx; v += 100) { const y = h - m.b - (h - m.t - m.b) * v / mx; el("line", { x1: m.l, x2: w, y1: y, y2: y, stroke: css("--rule") }, svg); lbl(svg, m.l - 5, y + 4, v, "lab s m", "end"); }
+    n.forEach((v, i) => { const hh = (h - m.t - m.b) * v / mx, x = m.l + i * cw; const r = el("rect", { x: x + 2, y: h - m.b - hh, width: cw - 4, height: hh, fill: edges[i + 1] <= 100 ? "#A3261B" : "#B9AC8E" }, svg);
+      hov(r, `<b>${fmt(edges[i])} to ${fmt(edges[i + 1] > 20000 ? 20000 : edges[i + 1])} km</b><br>${v} places`); if (!sm || i % 2 === 0) lbl(svg, x + cw / 2, h - m.b + 15, lab[i], "lab s m", "middle"); });
+    lbl(svg, m.l + (w - m.l) / 2, h - 6, "kilometres from observatory to place (red: under 100 km)", "lab s m", "middle");
+  });
+}
+function obsTable() {
+  const t = $("obsTable");
+  t.innerHTML = `<thead><tr><th>Observatory</th><th>Country</th><th class="r">Places</th><th class="r">Own country</th><th class="r">Median km</th><th class="r">Within 100 km</th></tr></thead><tbody>` +
+    R.obs.map((o, i) => `<tr data-k="${i}"><td>${STAR()}${esc(o.site)}</td><td>${esc(o.country)}</td><td class="r"><b>${o.n}</b></td><td class="r">${Math.round(o.same_pct)}%</td><td class="r">${fmt(o.median_km)}</td><td class="r">${Math.round(o.w100_pct)}%</td></tr>`).join("") + `</tbody>`;
+  t.querySelectorAll("tr[data-k]").forEach(r => r.onclick = () => { const o = R.obs[+r.dataset.k], i = SITE.obs.findIndex(x => x[0] === o.site); toMap(); setTimeout(() => pickObs(i, true), 350); });
+}
+function ukTable() {
+  const t = $("ukTable");
+  t.innerHTML = `<thead><tr><th>Asteroid</th><th>Place</th><th>Found at</th><th class="r">Year</th><th class="r">km</th></tr></thead><tbody>` +
+    R.uk.list.map((u, i) => `<tr data-k="${i}"><td>${esc(u.asteroid)}</td><td><i style="display:inline-block;width:9px;height:9px;border-radius:50%;background:${KC[u.kind]};margin-right:5px"></i>${esc(u.place)}</td><td>${esc(u.site || "")}</td><td class="r">${u.year ?? ""}</td><td class="r">${u.km == null ? "" : fmt(u.km)}</td></tr>`).join("") + `</tbody>`;
+  t.querySelectorAll("tr[data-k]").forEach(r => r.onclick = () => { const u = R.uk.list[+r.dataset.k]; const x = ROWS.find(q => q.name === u.asteroid && q.place === u.place); if (x) { toMap(); setTimeout(() => pickPlace(x.nid, true), 350); } });
+}
+
+/* ---------- the map ---------- */
+let SITE = null, ROWS = [], PL = {}, map = null, ready = false;
+const S = { off: new Set(), obs: null, place: null };
+const LYDEF = { lines: true, obs: true, names: true, mountains: true, forests: true, rivers: true, names_e: true, borders: true, modern: false };
+const LY = { ...LYDEF };
+try { Object.assign(LY, JSON.parse(localStorage.getItem("at_layers") || "{}")); } catch (e) {}
+const saveLY = () => { try { localStorage.setItem("at_layers", JSON.stringify(LY)); } catch (e) {} };
+const toMap = () => $("atlas").scrollIntoView({ behavior: "smooth", block: "start" });
+
+function gc(a, b, n = 32) {   // great circle points, longitudes unwrapped so the line crosses the date line smoothly
+  const r = Math.PI / 180, [l1, p1] = [a[0] * r, a[1] * r], [l2, p2] = [b[0] * r, b[1] * r];
+  const v1 = [Math.cos(p1) * Math.cos(l1), Math.cos(p1) * Math.sin(l1), Math.sin(p1)], v2 = [Math.cos(p2) * Math.cos(l2), Math.cos(p2) * Math.sin(l2), Math.sin(p2)];
+  const d = Math.acos(Math.max(-1, Math.min(1, v1[0] * v2[0] + v1[1] * v2[1] + v1[2] * v2[2])));
+  if (d < 1e-6) return [a, b];
+  const out = []; let prev = null;
+  for (let i = 0; i <= n; i++) { const t = i / n, s1 = Math.sin((1 - t) * d) / Math.sin(d), s2 = Math.sin(t * d) / Math.sin(d);
+    const x = s1 * v1[0] + s2 * v2[0], y = s1 * v1[1] + s2 * v2[1], z = s1 * v1[2] + s2 * v2[2];
+    let lon = Math.atan2(y, x) / r; const lat = Math.atan2(z, Math.hypot(x, y)) / r;
+    if (prev != null) { while (lon - prev > 180) lon -= 360; while (lon - prev < -180) lon += 360; }
+    prev = lon; out.push([lon, lat]); }
+  return out;
+}
+function build() {
+  const c = SITE.cols;
+  ROWS = SITE.rows.map((r, i) => Object.assign(Object.fromEntries(c.map((k, j) => [k, r[j]])), { i }));
+  ROWS.forEach(r => { const q = PL[r.nid] || (PL[r.nid] = { nid: r.nid, name: r.place, kind: r.kind, lon: r.lon, lat: r.lat, country: r.country, rows: [] }); q.rows.push(r.i); });
+}
+const vis = r => !S.off.has(r.kind);
+function placeGeo() { return { type: "FeatureCollection", features: Object.values(PL).filter(q => vis(q)).map(q => ({ type: "Feature", properties: { id: q.nid, k: q.kind, c: KC[KO[q.kind]], n: q.rows.length, nm: q.name, sel: (S.place === q.nid || (S.obs != null && q.rows.some(i => ROWS[i].obs === S.obs))) ? 1 : 0 }, geometry: { type: "Point", coordinates: [q.lon, q.lat] } })) }; }
+function lineGeo() {
+  const fs = [];
+  ROWS.forEach(r => { if (!vis(r) || r.obs < 0) return; const o = SITE.obs[r.obs]; if (o[1] == null) return;
+    const sel = S.place === r.nid || S.obs === r.obs;
+    if ((S.place != null || S.obs != null) && !sel) return;
+    fs.push({ type: "Feature", properties: { c: KC[KO[r.kind]], s: sel ? 1 : 0 }, geometry: { type: "LineString", coordinates: gc([o[1], o[2]], [r.lon, r.lat]) } }); });
+  return { type: "FeatureCollection", features: fs };
+}
+function obsGeo() { return { type: "FeatureCollection", features: SITE.obs.map((o, i) => o[1] == null ? null : ({ type: "Feature", properties: { i, n: o[4], nm: o[0], sel: S.obs === i ? 1 : 0 }, geometry: { type: "Point", coordinates: [o[1], o[2]] } })).filter(Boolean) }; }
+function refresh() { if (!ready) return; map.getSource("pl").setData(placeGeo()); map.getSource("ln").setData(lineGeo()); map.getSource("ob").setData(obsGeo()); side(); }
+function starImage() {
+  const s = 40, c = document.createElement("canvas"); c.width = c.height = s; const x = c.getContext("2d");
+  x.beginPath(); for (let i = 0; i < 10; i++) { const a = -Math.PI / 2 + i * Math.PI / 5, r = i % 2 ? 7.5 : 17; x.lineTo(s / 2 + r * Math.cos(a), s / 2 + r * Math.sin(a)); } x.closePath();
+  x.fillStyle = "#2B2119"; x.strokeStyle = "#F6EED8"; x.lineWidth = 3; x.stroke(); x.fill();
+  return x.getImageData(0, 0, s, s);
+}
+function initMap() {
+  const opts = { workerConfig: { heritage: "", hills: "", places: "" }, mapOptions: { center: [30, 35], zoom: innerWidth < 600 ? 0.5 : 1.2 } };
+  InkMap.create("map", opts).then(m => {
+    map = m; ready = true;
+    const fold = () => map.getContainer().querySelectorAll(".maplibregl-ctrl-attrib.maplibregl-compact").forEach(a => { a.classList.remove("maplibregl-compact-show"); a.removeAttribute("open"); }); map.once("idle", fold); fold();
+    map.addControl(new maplibregl.NavigationControl({ showCompass: false }), "bottom-right");
+    if (InkMap.setWinter) InkMap.setWinter(map, false);
+    ["heritage", "flight", "animals", "farms", "towns", "roads"].forEach(g => { try { InkMap.setGroup(map, g, false); } catch (e) {} });
+    if (InkMap.setSeaTone) InkMap.setSeaTone(map, isDark());
+    map.addImage("obstar", starImage(), { pixelRatio: 2 });
+    map.addSource("ln", { type: "geojson", data: { type: "FeatureCollection", features: [] } });
+    map.addSource("pl", { type: "geojson", data: { type: "FeatureCollection", features: [] }, attribution: "Asteroid names: <a href='https://www.wikidata.org/' target='_blank'>Wikidata</a> (CC0)" });
+    map.addSource("ob", { type: "geojson", data: { type: "FeatureCollection", features: [] } });
+    map.addLayer({ id: "ln", type: "line", source: "ln", layout: { "line-cap": "round" }, paint: { "line-color": ["get", "c"], "line-width": ["case", ["==", ["get", "s"], 1], 1.8, .7], "line-opacity": ["case", ["==", ["get", "s"], 1], .9, .22] } });
+    map.addLayer({ id: "pl", type: "circle", source: "pl", paint: { "circle-radius": ["interpolate", ["linear"], ["zoom"], 0, ["+", 2.2, ["get", "n"]], 5, ["+", 4, ["*", 1.5, ["get", "n"]]], 9, ["+", 7, ["*", 2, ["get", "n"]]]],
+      "circle-color": ["get", "c"], "circle-stroke-color": ["case", ["==", ["get", "sel"], 1], "#A3261B", "#2B2119"], "circle-stroke-width": ["case", ["==", ["get", "sel"], 1], 2.4, .7], "circle-opacity": .92 } });
+    map.addLayer({ id: "ob", type: "symbol", source: "ob", layout: { "icon-image": "obstar", "icon-size": ["interpolate", ["linear"], ["get", "n"], 1, .55, 50, .9, 250, 1.3], "icon-allow-overlap": true, "symbol-sort-key": ["get", "n"] } });
+    map.addLayer({ id: "plname", type: "symbol", source: "pl", minzoom: 4, layout: { "text-field": ["get", "nm"], "text-font": ["Ink Italic"], "text-size": 13, "text-variable-anchor": ["left", "right", "top"], "text-radial-offset": .8 }, paint: { "text-color": "#2B2119", "text-halo-color": "rgba(246,238,216,.95)", "text-halo-width": 1.6 } });
+    map.addLayer({ id: "obname", type: "symbol", source: "ob", minzoom: 3, layout: { "text-field": ["get", "nm"], "text-font": ["Ink Caps"], "text-size": 11.5, "text-anchor": "top", "text-offset": [0, 1] }, paint: { "text-color": "#2B2119", "text-halo-color": "rgba(246,238,216,.95)", "text-halo-width": 1.6 } });
+    map.on("click", "pl", e => { e.preventDefault(); pickPlace(e.features[0].properties.id, false); });
+    map.on("click", "ob", e => { e.preventDefault(); pickObs(e.features[0].properties.i, false); });
+    map.on("click", e => { if (e.defaultPrevented) return; if (S.place != null || S.obs != null) { S.place = null; S.obs = null; refresh(); } });
+    ["pl", "ob"].forEach(l => { map.on("mouseenter", l, () => map.getCanvas().style.cursor = "pointer"); map.on("mouseleave", l, () => map.getCanvas().style.cursor = ""); });
+    layerPanel(); applyLayers(); refresh();
+  }).catch(e => { console.error(e); $("note").textContent = "The map could not load: " + e.message; });
+}
+let pop = null;
+function rowHTML(r) { const o = r.obs >= 0 ? SITE.obs[r.obs] : null;
+  return `<li><b>${esc(r.name)}</b>${r.num && !String(r.name).replace(/[()]/g, "").startsWith(String(r.num)) ? ` <span class="k">(no. ${fmt(r.num)})</span>` : ""}<br><span class="k">Found</span> ${r.year ?? "year unknown"}${o ? ` at <span class="go" data-o="${r.obs}">${esc(o[0])}</span>` : ""}${r.disc ? ` by ${esc(r.disc)}` : ""}${r.km != null ? `<br><span class="k">${fmt(r.km)} km from the place</span>` : ""}<br><a href="https://www.wikidata.org/wiki/${r.aid}" target="_blank" rel="noopener">Asteroid on Wikidata</a></li>`; }
+function placeHTML(q) { return `<b class="t">${esc(q.name)}</b><span class="k">${esc(KN[KO[q.kind]])}${q.country ? " · " + esc(q.country) : ""}</span><ul>${q.rows.map(i => rowHTML(ROWS[i])).join("")}</ul><a href="https://www.wikidata.org/wiki/${q.nid}" target="_blank" rel="noopener">Place on Wikidata</a>`; }
+function wire(n) { if (!n) return; n.querySelectorAll("[data-o]").forEach(x => x.onclick = () => pickObs(+x.dataset.o, true)); n.querySelectorAll("[data-p]").forEach(x => x.onclick = () => pickPlace(x.dataset.p, true)); }
+function pickPlace(nid, fly) {
+  const q = PL[nid]; if (!q) return; if (S.off.has(q.kind)) { S.off.delete(q.kind); syncKinds(); }
+  S.place = nid; S.obs = null; refresh();
+  if (!ready) return;
+  const r0 = ROWS[q.rows[0]], o = r0.obs >= 0 ? SITE.obs[r0.obs] : null;
+  if (fly) { if (o && o[1] != null && r0.km > 300) { const pts = gc([o[1], o[2]], [q.lon, q.lat]); const lo = pts.map(p => p[0]), la = pts.map(p => p[1]); map.fitBounds([[Math.min(...lo), Math.min(...la)], [Math.max(...lo), Math.max(...la)]], { padding: 60, maxZoom: 6, duration: 1000 }); } else map.flyTo({ center: [q.lon, q.lat], zoom: Math.max(map.getZoom(), 6), duration: 1000 }); }
+  if (pop) pop.remove();
+  pop = new maplibregl.Popup({ maxWidth: "300px", focusAfterOpen: false }).setLngLat([q.lon, q.lat]).setHTML(placeHTML(q)).addTo(map); wire(pop.getElement());
+}
+function pickObs(i, fly) {
+  const o = SITE.obs[i]; if (!o) return; S.obs = i; S.place = null; if (pop) pop.remove(); refresh();
+  if (ready && fly && o[1] != null) { const rs = ROWS.filter(r => r.obs === i && vis(r)); const pts = rs.flatMap(r => gc([o[1], o[2]], [r.lon, r.lat], 8));
+    if (pts.length) { const lo = pts.map(p => p[0]), la = pts.map(p => p[1]); map.fitBounds([[Math.min(...lo), Math.max(-75, Math.min(...la))], [Math.max(...lo), Math.min(80, Math.max(...la))]], { padding: 50, maxZoom: 7, duration: 1000 }); } }
+}
+function side() {
+  const sd = $("side");
+  if (S.obs != null) { const o = SITE.obs[S.obs], rs = ROWS.filter(r => r.obs === S.obs && vis(r)).sort((a, b) => (a.km ?? 1e9) - (b.km ?? 1e9));
+    const own = rs.filter(r => r.country && o[3] && r.country.split(" (")[0] === o[3].split(" (")[0]).length;
+    sd.innerHTML = `<button class="btn" id="back" style="min-height:0;padding:5px 8px;margin-bottom:8px">Back to all places</button><h4>Observatory</h4><div class="big">${STAR()}${esc(o[0])}</div><p class="k">${esc(o[3] || "")} · ${rs.length} places named, ${own} in the same country</p><h4>Nearest first</h4><ul>${rs.slice(0, 60).map(r => `<li><span class="go" data-p="${r.nid}">${esc(r.place)}</span> <span class="k">${esc(r.country)}${r.km != null ? ", " + fmt(r.km) + " km" : ""}</span></li>`).join("")}</ul>${rs.length > 60 ? `<p class="k">and ${rs.length - 60} more</p>` : ""}`;
+    $("back").onclick = () => { S.obs = null; refresh(); }; wire(sd); return; }
+  if (S.place != null) { const q = PL[S.place]; sd.innerHTML = `<button class="btn" id="back" style="min-height:0;padding:5px 8px;margin-bottom:8px">Back to all places</button>` + placeHTML(q).replace('<b class="t">', '<div class="big">').replace("</b>", "</div>"); $("back").onclick = () => { S.place = null; if (pop) pop.remove(); refresh(); }; wire(sd); return; }
+  const vs = Object.values(PL).filter(vis);
+  sd.innerHTML = `<h4>Showing</h4><div class="big">${fmt(vs.length)} places</div><p class="k">${fmt(vs.reduce((a, q) => a + q.rows.length, 0))} asteroids</p><h4>Observatories that named most</h4><ul>${SITE.obs.slice(0, 12).map((o, i) => `<li>${STAR()}<span class="go" data-o="${i}">${esc(o[0])}</span> <span class="k">${o[4]}</span></li>`).join("")}</ul><p class="k">Click a place or a star on the map.</p>`;
+  wire(sd);
+}
+function legend() { $("legend").innerHTML = KO.filter(k => R.kinds[k].n).map(k => `<span><i style="background:${KC[k]}"></i>${esc(KN[k])}</span>`).join("") + `<span>${STAR()}Discovery site (observatory)</span>`; }
+function syncKinds() { document.querySelectorAll("#kindRow .btn").forEach(b => b.setAttribute("aria-pressed", !S.off.has(+b.dataset.k))); refresh(); }
+function layerPanel() {
+  const d = document.createElement("div"); d.className = "maplibregl-ctrl lyrCtl";
+  d.innerHTML = `<button class="lyrBtn" aria-expanded="false">Map layers</button><div class="lyrPanel" hidden><h5>Asteroids</h5><label><input type="checkbox" data-k="lines"> Lines to observatories</label><label><input type="checkbox" data-k="obs"> Observatories</label><label><input type="checkbox" data-k="names"> Names of places and observatories</label><h5>The inked map</h5><label><input type="checkbox" data-k="mountains"> Ink mountains and hills</label><label><input type="checkbox" data-k="forests"> Forests and moor</label><label><input type="checkbox" data-k="rivers"> Rivers and lakes</label><label><input type="checkbox" data-k="names_e"> Place names</label><label><input type="checkbox" data-k="borders"> Borders</label><label><input type="checkbox" data-k="modern"> Plain modern map</label><button class="reset">Reset layers</button></div>`;
+  ["click", "dblclick", "mousedown", "touchstart", "wheel"].forEach(t => d.addEventListener(t, e => e.stopPropagation(), { passive: t !== "click" }));
+  map.addControl({ onAdd() { return d; }, onRemove() { d.remove(); } }, "top-left");
+  const btn = d.querySelector(".lyrBtn"), pan = d.querySelector(".lyrPanel");
+  btn.onclick = () => { const o = pan.hidden; pan.hidden = !o; btn.setAttribute("aria-expanded", o); };
+  const sync = () => pan.querySelectorAll("[data-k]").forEach(i => i.checked = !!LY[i.dataset.k]);
+  pan.querySelectorAll("[data-k]").forEach(i => i.addEventListener("change", () => { LY[i.dataset.k] = i.checked; saveLY(); applyLayers(); }));
+  pan.querySelector(".reset").onclick = () => { Object.assign(LY, LYDEF); saveLY(); sync(); applyLayers(); }; sync();
+}
+function applyLayers() {
+  if (!ready) return; const v = x => x ? "visible" : "none";
+  map.setLayoutProperty("ln", "visibility", v(LY.lines)); map.setLayoutProperty("ob", "visibility", v(LY.obs));
+  map.setLayoutProperty("plname", "visibility", v(LY.names)); map.setLayoutProperty("obname", "visibility", v(LY.names && LY.obs));
+  const m = LY.modern;
+  [["mountains", LY.mountains], ["forests", LY.forests], ["rivers", LY.rivers], ["names", LY.names_e], ["borders", LY.borders]].forEach(([g, on]) => { try { InkMap.setGroup(map, g, on && !(m && ["mountains", "forests"].includes(g))); } catch (e) {} });
+  try { InkMap.setGroup(map, "paper", !m); InkMap.setGroup(map, "modern", m); InkMap.setGroup(map, "coast", !m); } catch (e) {}
+}
+function search() {
+  const q = $("q"), sug = $("sug"), norm = s => String(s || "").normalize("NFD").replace(/[̀-ͯ]/g, "").toLowerCase(), idx = [];
+  Object.values(PL).forEach(p => idx.push([norm(p.name), `${esc(p.name)} <span>${esc(KN[KO[p.kind]].split(",")[0].toLowerCase())}, ${esc(p.country)}</span>`, () => pickPlace(p.nid, true)]));
+  ROWS.forEach(r => { if (norm(r.name) !== norm(r.place)) idx.push([norm(r.name), `${esc(r.name)} <span>asteroid, after ${esc(r.place)}</span>`, () => pickPlace(r.nid, true)]); });
+  SITE.obs.forEach((o, i) => idx.push([norm(o[0]), `${esc(o[0])} <span>observatory, ${o[4]} places</span>`, () => pickObs(i, true)]));
+  let hits = [], sel = -1;
+  const show = () => { sug.innerHTML = hits.map((h, i) => `<li role="option" aria-selected="${i === sel}" data-i="${i}">${h[1]}</li>`).join(""); sug.style.display = hits.length ? "block" : "none"; sug.querySelectorAll("li").forEach(li => li.onmousedown = e => { e.preventDefault(); go(+li.dataset.i); }); };
+  const go = i => { const h = hits[i]; if (!h) return; sug.style.display = "none"; q.blur(); toMap(); setTimeout(h[2], 300); };
+  q.addEventListener("input", () => { const s = norm(q.value.trim()); sel = -1; if (s.length < 2) { hits = []; show(); return; } hits = idx.filter(x => x[0].replace(/^\(?\d+\)?\s*/, "").startsWith(s)).concat(idx.filter(x => !x[0].replace(/^\(?\d+\)?\s*/, "").startsWith(s) && x[0].includes(s))).slice(0, 12); show(); });
+  q.addEventListener("keydown", e => { if (e.key === "ArrowDown") { sel = Math.min(hits.length - 1, sel + 1); show(); e.preventDefault(); } else if (e.key === "ArrowUp") { sel = Math.max(0, sel - 1); show(); e.preventDefault(); } else if (e.key === "Enter") go(sel < 0 ? 0 : sel); else if (e.key === "Escape") sug.style.display = "none"; });
+  q.addEventListener("blur", () => setTimeout(() => sug.style.display = "none", 150));
+}
+function boot() {
+  kindChart(); ctyChart(); legend();
+  KO.forEach((k, i) => { if (!R.kinds[k].n) return; const b = document.createElement("button"); b.className = "btn"; b.dataset.k = i; b.setAttribute("aria-pressed", true); b.innerHTML = `<i style="background:${KC[k]}"></i>${esc(KN[k].split(",")[0].replace("Observatories", "Institutions"))}`;
+    b.onclick = () => { S.off.has(i) ? S.off.delete(i) : S.off.add(i); syncKinds(); }; $("kindRow").appendChild(b); });
+  fetch("data/site.json").then(r => r.json()).then(s => { SITE = s; build(); distChart(); obsTable(); ukTable(); search(); side();
+    if (!window.maplibregl) { $("note").textContent = "The map library did not load."; return; } initMap(); }).catch(e => { console.error(e); $("note").textContent = "The page data did not load."; });
+}
+$("theme").onclick = () => { const r = document.documentElement; r.dataset.theme = isDark() ? "light" : "dark"; redraws.forEach(f => f()); if (map && InkMap.setSeaTone) InkMap.setSeaTone(map, isDark()); };
+boot();
+</script>
+/*FULLSCREEN*/
+<script src="https://maps.tristanhotham.com/assets/site-nav.js" defer></script>
+</body>
+</html>
