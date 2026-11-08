@@ -1,0 +1,523 @@
+<!doctype html>
+<html lang="en-GB">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Towns with an asteroid</title>
+<meta name="description" content="2,193 asteroids named after places on Earth, mapped with a line from the observatory that found each one: who named which towns, rivers and mountains, and how close to home. From Wikidata.">
+<meta property="og:title" content="Towns with an asteroid: the places on Earth that have a minor planet">
+<meta property="og:description" content="Japan has 421 asteroids named after its places; Finland has the most per head. Half of the Czech observatory Kleť's places lie within 100 km of its dome.">
+<meta property="og:image" content="https://maps.tristanhotham.com/asteroid-towns/header.png">
+<meta property="og:url" content="https://maps.tristanhotham.com/asteroid-towns/">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600;9..144,800;9..144,900&family=IBM+Plex+Mono:wght@400;500&family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,600;1,8..60,400&family=MedievalSharp&display=swap">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/maplibre-gl@4.7.1/dist/maplibre-gl.css">
+<style>
+
+/* Parchment and ink; a colour for each kind of place, and black stars for observatories. */
+:root{
+  --bg:#F6EED8; --panel:#EFE3C4; --fg:#2B2119; --muted:#6E604E; --rule:#E2D3AE; --card:#FBF5E4; --border:#D3C29A;
+  --hot:#A3261B; --cool:#3D6E9E;
+  --display:"Fraunces",Georgia,"Times New Roman",serif;
+  --body:"Source Serif 4",Georgia,"Times New Roman",serif;
+  --mono:"IBM Plex Mono",ui-monospace,Menlo,Consolas,monospace;
+  --hand:"MedievalSharp","Fraunces",Georgia,serif;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --bg:#1A1612; --panel:#241E18; --fg:#EFE6D4; --muted:#ADA08B; --rule:#3A3128; --card:#211B15; --border:#4D4234; --hot:#E07A6C; --cool:#8FB4DA; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#1A1612; --panel:#241E18; --fg:#EFE6D4; --muted:#ADA08B; --rule:#3A3128; --card:#211B15; --border:#4D4234; --hot:#E07A6C; --cool:#8FB4DA; color-scheme:dark}
+*,*::before,*::after{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--bg);color:var(--fg);font:400 18px/1.62 var(--body);
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));overflow-x:hidden}
+.wrap{max-width:720px;margin:0 auto;padding-block:28px 64px}
+.wrap .bleed{width:min(1240px,calc(100vw - 32px));margin-left:calc((100% - min(1240px,100vw - 32px))/2)}
+a{color:inherit;text-decoration-color:var(--hot);text-underline-offset:3px}
+.kicker{font:500 12px/1 var(--mono);letter-spacing:.12em;text-transform:uppercase;color:var(--muted);display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+.kicker b{background:#A3261B;color:#fff;padding:5px 8px;font-weight:500}
+header.hero{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:12px 24px;align-items:end;border-bottom:6px double var(--fg);padding-bottom:22px;margin-top:18px}
+h1{font:900 clamp(44px,10vw,92px)/.92 var(--display);letter-spacing:-.02em;margin:0;text-wrap:balance}
+h1 .a{color:var(--hot);font-family:var(--hand);font-weight:400;letter-spacing:.01em}
+.mark{width:clamp(78px,16vw,130px);height:auto;display:block;color:var(--fg)}
+.dek{grid-column:1/-1;font-size:21px;line-height:1.42;margin:8px 0 0;max-width:58ch}
+.byline{font:400 13px/1.4 var(--mono);color:var(--muted);margin-top:14px}
+h2{font:800 34px/1.04 var(--display);letter-spacing:-.01em;margin:54px 0 10px;text-wrap:balance}
+h2 .n{font:500 13px/1 var(--mono);color:var(--hot);display:block;letter-spacing:.1em;margin-bottom:10px}
+h3{font:600 20px/1.25 var(--display);margin:28px 0 6px}
+p{margin:0 0 16px}
+.lede::first-letter{font:400 76px/.8 var(--hand);float:left;margin:6px 10px 0 0;color:var(--hot)}
+.stats{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:1px;background:var(--rule);border:1px solid var(--rule);margin:26px 0 8px}
+.stats div{background:var(--card);padding:14px 12px}
+.stats b{display:block;font:900 clamp(22px,4.4vw,32px)/1 var(--display);letter-spacing:-.01em;color:var(--hot)}
+.stats span{font:400 12px/1.35 var(--mono);color:var(--muted);display:block;margin-top:6px}
+@media (max-width:600px){.stats{grid-template-columns:repeat(2,minmax(0,1fr))}}
+.figure{margin:26px 0 30px}
+.fig-h{font:600 19px/1.25 var(--display);margin:0 0 4px}
+.fig-sub{font:400 13px/1.45 var(--mono);color:var(--muted);margin:0 0 12px}
+.src{font:400 12px/1.45 var(--mono);color:var(--muted);margin-top:10px}
+.chart{width:100%;position:relative}
+.chart svg{display:block;width:100%;height:auto;overflow:visible}
+svg text{font-family:var(--mono);fill:var(--fg)}
+.lab{font-size:12px}.lab.m{fill:var(--muted)}.lab.b{font-weight:500}.lab.s{font-size:11px}.lab.w{fill:#fff}
+.tip{position:absolute;pointer-events:none;background:var(--fg);color:var(--bg);font:400 12px/1.45 var(--mono);padding:8px 10px;border-radius:3px;max-width:300px;z-index:3000;transform:translate(-50%,calc(-100% - 12px));display:none}
+.controls{display:flex;gap:8px 16px;align-items:center;margin:0 0 10px;flex-wrap:wrap}
+.scrollrow{display:flex;gap:6px;overflow-x:auto;-webkit-overflow-scrolling:touch;scrollbar-width:thin;padding-bottom:2px;max-width:100%}
+.scrollrow .btn{flex:0 0 auto;white-space:nowrap}
+.ctl-l{font:500 11px/1 var(--mono);letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin-right:2px;flex:0 0 auto;align-self:center}
+.btn{font:500 12px/1 var(--mono);background:var(--card);color:var(--fg);border:1px solid var(--border);border-radius:3px;padding:8px 10px;cursor:pointer;min-height:36px}
+.btn[aria-pressed="true"]{background:var(--fg);color:var(--bg);border-color:var(--fg)}
+.btn i{display:inline-block;width:10px;height:10px;border-radius:50%;margin-right:6px;vertical-align:-1px;border:1px solid rgba(0,0,0,.25)}
+.btn:focus-visible,input:focus-visible,summary:focus-visible{outline:2px solid var(--hot);outline-offset:2px}
+.srch{position:relative;flex:1 1 260px;max-width:380px}
+.srch input{width:100%;font:400 15px/1 var(--mono);background:var(--card);color:var(--fg);border:1px solid var(--border);border-radius:3px;padding:9px 10px;min-height:40px}
+.sug{position:absolute;left:0;right:0;top:100%;margin:2px 0 0;padding:0;list-style:none;background:var(--card);border:1px solid var(--border);max-height:320px;overflow:auto;display:none;box-shadow:0 3px 10px rgba(60,40,10,.2);z-index:1200;font:400 13px/1.35 var(--mono)}
+.sug li{padding:8px 10px;cursor:pointer;border-bottom:1px solid var(--rule)}
+.sug li span{color:var(--muted);font-size:12px}
+.sug li[aria-selected="true"],.sug li:hover{background:var(--panel)}
+.twin{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:12px}
+@media (max-width:900px){.twin{grid-template-columns:1fr}}
+.mapbox{position:relative}
+.maptitle{font:500 11px/1 var(--mono);letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin:0 0 6px;display:flex;justify-content:space-between;gap:8px}
+.lmap{height:600px;border:1px solid #BCA676;background:#F3E5BF;border-radius:2px;position:relative;overflow:hidden}
+#bmap{background:#E9DFC6}
+@media (max-width:900px){.lmap{height:min(62vh,520px)}}
+.maplibregl-map{font:400 12px/1.4 var(--mono)}
+.lyrCtl{margin:10px 0 0 10px}
+.lyrBtn{background:#FBF5E4;color:#2B2119;border:1px solid #9C8656;border-radius:3px;font:600 12px/1 var(--mono);padding:8px 10px;cursor:pointer;box-shadow:0 1px 4px rgba(60,40,10,.18)}
+.lyrBtn[aria-expanded="true"]{background:#2B2119;color:#F6EED8}
+.lyrPanel{background:rgba(251,245,228,.98);color:#2B2119;border:1px solid #9C8656;border-radius:3px;padding:10px 12px 8px;margin-top:6px;width:250px;box-shadow:0 2px 10px rgba(60,40,10,.25);font:400 12px/1.3 var(--mono);max-height:min(56vh,430px);overflow:auto}
+.lyrPanel[hidden]{display:none}
+.lyrPanel h5{margin:8px 0 2px;padding-top:6px;border-top:1px solid #E2D3AE;font:600 10.5px/1 var(--mono);letter-spacing:.12em;text-transform:uppercase;color:#A3261B}
+.lyrPanel h5:first-child{border-top:0;padding-top:0;margin-top:0}
+.lyrPanel label{display:flex;gap:7px;align-items:center;cursor:pointer;padding:3px 0;min-height:28px}
+.lyrPanel input{accent-color:#A3261B;width:15px;height:15px;flex:none}
+.lyrPanel .reset{font:400 11px var(--mono);color:#6E604E;background:none;border:0;padding:4px 0 0;cursor:pointer;text-decoration:underline}
+.mapnote{position:absolute;left:10px;bottom:10px;z-index:3;background:rgba(251,245,228,.92);border:1px solid #9C8656;border-radius:3px;padding:5px 8px;font:400 11.5px/1.35 var(--mono);max-width:min(330px,70%);color:#2B2119;pointer-events:none}
+.mapnote:empty{display:none}
+.maplibregl-ctrl-attrib{font:400 11px/1.3 var(--mono)!important;background:rgba(251,245,228,.85)!important;color:#2B2119}
+.maplibregl-ctrl-group{background:#FBF5E4!important;border:1px solid #9C8656}
+.maplibregl-popup-content{background:#FBF5E4;color:#2B2119;font:400 12.5px/1.45 var(--mono);border:1px solid #9C8656;border-radius:4px;padding:10px 12px;box-shadow:0 3px 12px rgba(60,40,10,.25);max-width:300px;max-height:320px;overflow:auto}
+.maplibregl-popup-content b.t{display:block;font:400 19px/1.15 var(--hand);color:#A3261B;margin-bottom:3px}
+.maplibregl-popup-content .k{color:#6E604E}
+.maplibregl-popup-content a{color:#A3261B}
+.maplibregl-popup-content ul{margin:4px 0 0;padding:0;list-style:none}
+.maplibregl-popup-content li{margin:3px 0}
+.maplibregl-popup-tip{border-top-color:#9C8656!important;border-bottom-color:#9C8656!important}
+.maplibregl-popup-close-button{color:#2B2119;font-size:18px;padding:0 6px}
+.go{cursor:pointer;text-decoration:underline;text-decoration-color:#A3261B;text-underline-offset:3px;color:#A3261B}
+.flylink{display:inline-block;margin-top:6px;font:500 12px/1 var(--mono);color:#fff!important;background:#A3261B;border-radius:3px;padding:7px 9px;cursor:pointer;text-decoration:none}
+.linkcard{display:grid;grid-template-columns:minmax(0,1fr) 30px minmax(0,1fr);gap:8px;align-items:center;background:var(--card);border:1px solid var(--border);padding:10px 12px;margin-top:10px;font:400 13px/1.45 var(--mono);min-height:58px}
+.linkcard .arrow{font:400 22px/1 var(--hand);color:var(--hot);text-align:center}
+.linkcard b{font:700 16px/1.2 var(--display)}
+.linkcard .k{color:var(--muted)}
+@media (max-width:600px){.linkcard{grid-template-columns:1fr}.linkcard .arrow{transform:rotate(90deg);text-align:left}}
+.legend{display:flex;gap:6px 14px;flex-wrap:wrap;font:400 12px/1.3 var(--mono);color:var(--muted);margin-top:8px;align-items:center}
+.legend span{display:inline-flex;align-items:center}
+.legend i{display:inline-block;width:12px;height:12px;margin-right:6px;border-radius:50%;border:1px solid rgba(43,33,25,.5)}
+.pull{font:600 26px/1.25 var(--display);border-left:6px solid var(--hot);padding:4px 0 4px 18px;margin:30px 0}
+table.tbl{width:100%;border-collapse:collapse;font:400 13px/1.4 var(--mono)}
+table.tbl th{font:500 11px/1 var(--mono);letter-spacing:.06em;text-transform:uppercase;color:var(--muted);text-align:left;padding:6px 6px 6px 0;border-bottom:2px solid var(--fg);position:sticky;top:0;background:var(--card)}
+table.tbl td{padding:6px 6px 6px 0;border-bottom:1px solid var(--rule);vertical-align:top}
+table.tbl td.r,table.tbl th.r{text-align:right;white-space:nowrap}
+table.tbl tr[data-k]{cursor:pointer}
+table.tbl tr[data-k]:hover td{background:var(--panel)}
+.tablebox{max-height:460px;overflow:auto;border:1px solid var(--border);background:var(--card);padding:0 10px}
+details{border-top:1px solid var(--rule);border-bottom:1px solid var(--rule);padding:10px 0;margin:18px 0;font-size:16px}
+summary{font:500 13px/1.4 var(--mono);letter-spacing:.06em;text-transform:uppercase;cursor:pointer;color:var(--muted)}
+.cta{display:flex;gap:10px;flex-wrap:wrap;margin:18px 0}
+.cta a{font:500 13px/1 var(--mono);text-decoration:none;border:1px solid var(--fg);padding:11px 14px;border-radius:3px}
+.cta a.p{background:#A3261B;border-color:#A3261B;color:#fff}
+footer{border-top:6px double var(--fg);margin-top:56px;padding-top:16px;font:400 13px/1.55 var(--mono);color:var(--muted)}
+footer p{margin:0 0 10px}
+.theme{position:fixed;right:12px;bottom:12px;z-index:1002}
+@media (max-width:600px){h2{font-size:28px}}
+@media print{.theme,.controls{display:none}}
+
+#map{height:680px}
+@media (max-width:900px){#map{height:min(70vh,560px)}}
+.mapgrid{display:grid;grid-template-columns:minmax(0,1fr) 300px;gap:12px;align-items:start}
+@media (max-width:900px){.mapgrid{grid-template-columns:1fr}}
+.side{background:var(--card);border:1px solid var(--border);padding:12px;font:400 13px/1.45 var(--mono);max-height:680px;overflow:auto}
+@media (max-width:900px){.side{max-height:none}}
+.side h4{font:500 11px/1 var(--mono);letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin:12px 0 8px}
+.side h4:first-child{margin-top:2px}
+.side .big{font:800 24px/1.1 var(--display);margin:2px 0 4px}
+.side ul{margin:4px 0 8px;padding-left:0;list-style:none}
+.side li{margin:4px 0}
+.side .k{color:var(--muted)}
+.side .go{color:var(--hot)}
+.star{display:inline-block;width:12px;height:12px;vertical-align:-1px;margin-right:5px}
+</style>
+</head>
+<body>
+<div class="wrap">
+<div class="kicker"><b>Data study</b><span>Space and places</span><span>Minor planets named after Earth</span></div>
+<header class="hero">
+  <h1>Towns with an <span class="a">asteroid</span></h1>
+  <svg class="mark" viewBox="0 0 120 120" aria-hidden="true"><g id="heroMark"></g></svg>
+  <p class="dek">Somewhere in the asteroid belt there is a rock called London, another called Brighton and one called Midsomer Norton. I mapped 2,193 asteroids (2,206 namings) named after places on Earth, each with a line to the observatory that found it, to see which towns have one, who named them, and from how far away.</p>
+</header>
+<div class="byline">Dr Tristan Hotham · Independent researcher · 2026 · Data: Wikidata (CC0); map: OpenStreetMap via OpenFreeMap, Natural Earth</div>
+
+<div class="stats">
+  <div><b>421</b><span>asteroids named after places in Japan, the most of any country</span></div>
+  <div><b>11.8</b><span>per million people in Finland, the most per head</span></div>
+  <div><b>50%</b><span>of the places named from Kleť Observatory lie within 100 km of it</span></div>
+  <div><b>26</b><span>asteroids named after places in the United Kingdom</span></div>
+</div>
+
+<p class="lede">When you discover an asteroid you get to suggest its name. Most discoverers honour people: colleagues, family, scientists, musicians. But about one asteroid in five with a recorded namesake honours a place, and that is where this map comes in. Towns and villages, rivers and mountains, provinces and countries, universities and observatories all have their rock in the sky, chosen by an astronomer somewhere else on Earth, and approved by the International Astronomical Union.</p>
+<p>Wikidata, the open database behind Wikipedia, records what 11,268 asteroids are named after. 2,206 of those namings are of places with coordinates, 19% of the total; 65% are of people and the rest of other things, from gods and novels to bands and locomotives. For each place I know which observatory found the asteroid, so I can draw the line between them: the naming geography of the solar system.</p>
+
+<h2><span class="n">01 · The map</span>Every place with an asteroid</h2>
+<p>Each dot is a place, coloured by what kind of place it is. Black stars are the observatories that found the asteroids; click one to see every place it named, or click a place to see its asteroid and the line back to where it was found.</p>
+<div class="bleed" id="atlas">
+<div class="controls">
+  <div class="scrollrow" id="kindRow"><span class="ctl-l">Show</span></div>
+  <div class="srch"><input type="search" id="q" placeholder="Find a town, asteroid or observatory" aria-label="Find a town, asteroid or observatory" autocomplete="off"><ul class="sug" id="sug" role="listbox"></ul></div>
+</div>
+<div class="mapgrid">
+  <div><div id="map" class="lmap" role="application" aria-label="Map of places on Earth with an asteroid named after them"><div class="mapnote" id="note"></div></div>
+  <div class="legend" id="legend"></div></div>
+  <div class="side" id="side" aria-live="polite"></div>
+</div>
+<p class="src">Places from Wikidata's "named after" statements for asteroids, at the coordinates Wikidata gives the place (a region or river is a single point). Lines join each place to the discovery site of its asteroid, along the great circle. Mythical and fictional places are left out. Earth: the Inked World map style on OpenStreetMap data via OpenFreeMap.</p>
+</div>
+
+<h2><span class="n">02 · People, places and things</span>One in five is a place</h2>
+<p>Of the 11,418 namings, 7,463 (65%) are of people, 2,206 (19%) of places with coordinates and 1,749 (15%) of other things. Among the places, towns, cities and villages lead with 1,150 (52%), then observatories, universities and other institutions (309), mountains, islands and other natural features (280), regions (191), rivers and lakes (140) and countries (82).</p>
+<div class="figure"><p class="fig-h">What the places are</p><p class="fig-sub">Place namings by kind. Hover a block.</p><div class="chart" id="kindChart"></div></div>
+
+<h2><span class="n">03 · Countries</span>Japan has the most, Finland the most per head</h2>
+<p>By modern country, Japan has 421 place namings (19%), far ahead of Germany (153), Russia (137), Italy (135) and the United States (130). Per head the leaders are smaller countries with busy asteroid hunters: Finland (11.8 per million people), the Czech Republic (9.8) and Sweden (8.1). Places in 111 countries have an asteroid in all.</p>
+<div class="figure"><p class="fig-h">Countries with the most places in the sky</p><p class="fig-sub">Left: place namings by modern country. Right: per million people, for countries of at least a million with five or more. Hover a bar.</p><div class="chart" id="ctyChart"></div></div>
+
+<h2><span class="n">04 · Who named them</span>Telescopes in Chile, names from Belgium</h2>
+<p>The 237 observatories behind these namings are led by La Silla in Chile (224 places), the Crimean Astrophysical Observatory (164) and Palomar in California (99). But a big telescope does not name its neighbours. Only 4% of La Silla's places are in Chile: the names follow the astronomers, not the telescope. The Belgian Eric Elst, the most prolific namer of places here with 167, worked at La Silla and named 36 places in France and 16 in Belgium; the Uppsala survey at La Silla named Swedish places. Purple Mountain Observatory in China named Chinese places almost without exception (99%).</p>
+<div class="figure"><p class="fig-h">The observatories that named the most places</p><p class="fig-sub">Place namings by discovery site; share in the observatory's own country; median distance to the place; share within 100 km. Click a row to see its lines on the map.</p><div class="tablebox"><table class="tbl" id="obsTable"></table></div></div>
+
+<h2><span class="n">05 · Close to home</span>Kleť and the Japanese amateurs</h2>
+<p>Half of all places lie within 508 km of the observatory that found their asteroid, and 27% within 100 km. The most local namers are small observatories run by devoted amateurs and their professional neighbours. Kleť Observatory, on the mountain of Kleť in South Bohemia, named 98 places, 81% of them Czech and 50% within 100 km. Japan's amateur observatories did the same for Japanese towns: 92% of the asteroids named after places in Japan were found in Japan, and 46% within 100 km of the place. For the Czech Republic it is 90% and 55%.</p>
+<div class="figure"><p class="fig-h">How far from the observatory</p><p class="fig-sub">Distance from the discovery site to the named place, all place namings with both positions. Hover a column.</p><div class="chart" id="distChart"></div></div>
+<p class="pull">Big telescopes name the world. Small ones name the next valley.</p>
+<p>82 asteroids are named after observatories and telescopes themselves, 26 of them after the very observatory that found them.</p>
+
+<h2><span class="n">06 · Britain</span>From London to Midsomer Norton</h2>
+<p>26 asteroids in Wikidata are named after places in the United Kingdom, 16 of them towns and cities. Almost all were found abroad, at observatories such as La Silla, Palomar and Siding Spring. The exceptions are home-grown: an amateur observatory at Church Stretton in Shropshire found the asteroids named Church Stretton and Salopia, the old name for Shropshire, and a small observatory at Stakenbridge found Old Joe, named after the clock tower of the University of Birmingham. Click a row to find the place.</p>
+<div class="figure"><p class="fig-h">Every British place with an asteroid in Wikidata</p><p class="fig-sub">By minor planet number. Click a row.</p><div class="tablebox"><table class="tbl" id="ukTable"></table></div></div>
+
+<h2><span class="n">07 · How I did this</span>Methods and caveats</h2>
+<p><b>Data.</b> Everything comes from Wikidata (CC0), queried through QLever: every asteroid with a "named after" (P138) statement, with its number, discoverer, discovery site and date, and the namesake's type, coordinates and country. I removed the duplicate rows the query makes for each discoverer and type. A namesake that is not a person and has coordinates counts as a place, unless it is mythical or fictional or not a place at all (languages, species, ships, battles and other events, peoples, television programmes, and organisations with no site of their own); I checked the whole list by eye. Kinds of place come from keyword rules on the namesake's Wikidata types. Countries are modern: the country Wikidata records for the place, or Natural Earth's borders where Wikidata is silent, names several countries or names a historical state; Crimea is counted as part of Ukraine; per head uses Natural Earth's population estimates. Distances are great circle distances between the discovery site and the place's point.</p>
+<p><b>Caveats.</b> This covers only the named minor planets that Wikidata links to a namesake, not all named minor planets; how complete it is varies by country and era, and I have not compared it with the Minor Planet Center's full list of names. The discoverer usually proposes the name, but not always, so the observatory is the place of discovery rather than certainly the place of naming. A region, river or country is reduced to one point, so its distance is rough. Asteroid names are Wikidata's multilingual label, or the English label, or a label in another language.</p>
+<details><summary>Sources and licences</summary>
+<ul>
+<li>Wikidata contributors, Wikidata (CC0), queried with QLever (University of Freiburg). Vrandečić, D. and Krötzsch, M. (2014) Wikidata: a free collaborative knowledgebase. Communications of the ACM 57(10), 78 to 85.</li>
+<li>Minor Planet Center, <a href="https://docs.minorplanetcenter.net/mpc-ops-docs/designations/how-asteroids-are-named/">How are asteroids named?</a> IAU Working Group Small Bodies Nomenclature, <a href="https://www.wgsbn-iau.org/">wgsbn-iau.org</a>.</li>
+<li>Natural Earth (public domain) for countries and population estimates (mostly for 2019). Map: the Inked World style on OpenStreetMap data (ODbL) via OpenFreeMap.</li>
+</ul></details>
+
+<div class="cta"><a class="p" href="https://doi.org/10.5281/zenodo.24052725">Read the paper</a><a href="https://github.com/Tristan-Hotham/asteroid-towns">Data and code</a><a href="https://blog.tristanhotham.com/2026/10/31/asteroid-towns/">Blog post</a></div>
+
+<footer>
+<p>Dr Tristan Hotham, Independent researcher. ORCID <a href="https://orcid.org/0000-0003-4931-9349">0000-0003-4931-9349</a>.</p>
+<p>Cite as: Hotham, T. (2026) Towns with an asteroid: the places on Earth that minor planets are named after. Zenodo. <a href="https://doi.org/10.5281/zenodo.24052725">https://doi.org/10.5281/zenodo.24052725</a></p>
+<p>Data: Wikidata (CC0). Text, figures and derived data CC BY 4.0; code MIT. Map data © OpenStreetMap contributors (ODbL); Natural Earth.</p>
+<p>I wrote the text, with drafting and editing assistance from Claude (Anthropic), which also helped prepare the analysis code. I reviewed and checked all text and results.</p>
+</footer>
+</div>
+<div class="tip" id="tip"></div>
+<button class="btn theme" id="theme" aria-label="Toggle dark mode">◐</button>
+<script src="https://cdn.jsdelivr.net/npm/maplibre-gl@4.7.1/dist/maplibre-gl.js"></script>
+<script src="js/curated.js?v=1"></script>
+<script src="js/ink-palette.js?v=1"></script>
+<script src="js/ink-icons.js?v=1"></script>
+<script src="js/ink-houses.js?v=1"></script>
+<script src="js/ink-map.js?v=1"></script>
+<script src="js/ink-extras.js?v=1"></script>
+<script>
+const R = {"meta":{"page":"https://maps.tristanhotham.com/asteroid-towns/","repo":"https://github.com/Tristan-Hotham/asteroid-towns"},"source":{"rows":22704,"asteroids":11268,"pairs":11418,"numbered":11234,"person":7463,"place":2206,"other":1749,"person_pct":65.36,"place_pct":19.32,"other_pct":15.32,"places_distinct":2175,"place_asteroids":2193,"with_site":2134,"first_year":1852,"last_year":2017,"multi_namesake":133},"kinds":{"town":{"n":1150,"pct":52.13,"name":"Towns, cities and villages"},"region":{"n":191,"pct":8.66,"name":"Regions, provinces and counties"},"country":{"n":82,"pct":3.72,"name":"Countries"},"water":{"n":140,"pct":6.35,"name":"Rivers, lakes and seas"},"nature":{"n":280,"pct":12.69,"name":"Mountains, islands and other natural features"},"inst":{"n":309,"pct":14.01,"name":"Observatories, universities and other institutions"},"other":{"n":54,"pct":2.45,"name":"Other places"}},"countries":[{"country":"Japan","iso3":"JPN","n":421,"pct":19.08,"per_m":3.33},{"country":"Germany","iso3":"DEU","n":153,"pct":6.94,"per_m":1.84},{"country":"Russia","iso3":"RUS","n":137,"pct":6.21,"per_m":0.95},{"country":"Italy","iso3":"ITA","n":135,"pct":6.12,"per_m":2.24},{"country":"United States","iso3":"USA","n":130,"pct":5.89,"per_m":0.4},{"country":"China","iso3":"CHN","n":120,"pct":5.44,"per_m":0.09},{"country":"France","iso3":"FRA","n":106,"pct":4.81,"per_m":1.58},{"country":"Czech Republic","iso3":"CZE","n":104,"pct":4.71,"per_m":9.75},{"country":"Sweden","iso3":"SWE","n":83,"pct":3.76,"per_m":8.07},{"country":"Finland","iso3":"FIN","n":65,"pct":2.95,"per_m":11.77},{"country":"Ukraine","iso3":"UKR","n":64,"pct":2.9,"per_m":1.44},{"country":"Spain","iso3":"ESP","n":49,"pct":2.22,"per_m":1.04},{"country":"Belgium","iso3":"BEL","n":43,"pct":1.95,"per_m":3.74},{"country":"Switzerland","iso3":"CHE","n":32,"pct":1.45,"per_m":3.73},{"country":"Hungary","iso3":"HUN","n":32,"pct":1.45,"per_m":3.28},{"country":"Greece","iso3":"GRC","n":27,"pct":1.22,"per_m":2.52},{"country":"United Kingdom","iso3":"GBR","n":26,"pct":1.18,"per_m":0.39},{"country":"Slovakia","iso3":"SVK","n":25,"pct":1.13,"per_m":4.58},{"country":"Netherlands","iso3":"NLD","n":22,"pct":1.0,"per_m":1.27},{"country":"Austria","iso3":"AUT","n":22,"pct":1.0,"per_m":2.48}],"per_m":[{"country":"Finland","n":65,"per_m":11.77,"pop_m":5.5},{"country":"Czech Republic","n":104,"per_m":9.75,"pop_m":10.7},{"country":"Sweden","n":83,"per_m":8.07,"pop_m":10.3},{"country":"Croatia","n":19,"per_m":4.67,"pop_m":4.1},{"country":"Slovakia","n":25,"per_m":4.58,"pop_m":5.5},{"country":"Lithuania","n":12,"per_m":4.31,"pop_m":2.8},{"country":"Estonia","n":5,"per_m":3.77,"pop_m":1.3},{"country":"Belgium","n":43,"per_m":3.74,"pop_m":11.5},{"country":"Switzerland","n":32,"per_m":3.73,"pop_m":8.6},{"country":"Latvia","n":7,"per_m":3.66,"pop_m":1.9},{"country":"Japan","n":421,"per_m":3.33,"pop_m":126.3},{"country":"Hungary","n":32,"per_m":3.28,"pop_m":9.8},{"country":"Greece","n":27,"per_m":2.52,"pop_m":10.7},{"country":"Austria","n":22,"per_m":2.48,"pop_m":8.9},{"country":"Italy","n":135,"per_m":2.24,"pop_m":60.3}],"n_countries":111,"per_m_rule":"countries with at least 1 million people (Natural Earth POP_EST) and at least 5 place namings","dist":{"n":2134,"median":508,"w50_pct":19.73,"w100_pct":27.13,"w10":204,"same_pct":58.53,"town_n":1108,"town_median":471,"town_w100_pct":28.7,"town_same_pct":59.75},"obs":[{"site":"La Silla Observatory","country":"Chile","n":224,"same_pct":3.6,"median_km":11631,"w100_pct":1.8},{"site":"Crimean Astrophysical Observatory","country":"Ukraine (Crimea)","n":164,"same_pct":25.6,"median_km":1251,"w100_pct":9.8},{"site":"Palomar Observatory","country":"United States","n":99,"same_pct":21.2,"median_km":9177,"w100_pct":1.0},{"site":"Kleť Observatory","country":"Czech Republic","n":98,"same_pct":80.6,"median_km":101,"w100_pct":50.0},{"site":"Heidelberg-Königstuhl State Observatory","country":"Germany","n":86,"same_pct":27.9,"median_km":795,"w100_pct":14.0},{"site":"Iso-Heikkilä Observatory","country":"Finland","n":81,"same_pct":79.0,"median_km":364,"w100_pct":13.6},{"site":"Purple Mountain Observatory","country":"China","n":72,"same_pct":98.6,"median_km":993,"w100_pct":5.6},{"site":"Karl Schwarzschild Observatory","country":"Germany","n":63,"same_pct":74.6,"median_km":285,"w100_pct":25.4},{"site":"Ōizumi Observatory","country":"Japan","n":63,"same_pct":96.8,"median_km":120,"w100_pct":41.3},{"site":"Kitami Observatory","country":"Japan","n":51,"same_pct":96.1,"median_km":245,"w100_pct":27.5},{"site":"Union Observatory","country":"South Africa","n":49,"same_pct":34.7,"median_km":1471,"w100_pct":2.0},{"site":"Geisei observatory","country":"Japan","n":48,"same_pct":85.4,"median_km":117,"w100_pct":45.8},{"site":"Anderson Mesa Station","country":"United States","n":44,"same_pct":22.7,"median_km":9089,"w100_pct":4.5},{"site":"Piszkéstető Station","country":"Hungary","n":30,"same_pct":93.3,"median_km":174,"w100_pct":36.7},{"site":"Simeiz Observatory","country":"Ukraine (Crimea)","n":28,"same_pct":32.1,"median_km":976,"w100_pct":21.4}],"n_obs":237,"homeliest":[{"site":"Nanyo Observatory","country":"Japan","n":22,"w100_pct":68.2,"median_km":35},{"site":"Kleť Observatory","country":"Czech Republic","n":98,"w100_pct":50.0,"median_km":101},{"site":"Geisei observatory","country":"Japan","n":48,"w100_pct":45.8,"median_km":117},{"site":"Royal Observatory of Belgium","country":"Belgium","n":21,"w100_pct":42.9,"median_km":157},{"site":"Ōizumi Observatory","country":"Japan","n":63,"w100_pct":41.3,"median_km":120},{"site":"Zimmerwald Observatory","country":"Switzerland","n":20,"w100_pct":40.0,"median_km":126}],"farthest":[{"site":"La Silla Observatory","country":"Chile","n":224,"w100_pct":1.8,"median_km":11631},{"site":"Palomar Observatory","country":"United States","n":99,"w100_pct":1.0,"median_km":9177},{"site":"Anderson Mesa Station","country":"United States","n":44,"w100_pct":4.5,"median_km":9089},{"site":"Union Observatory","country":"South Africa","n":49,"w100_pct":2.0,"median_km":1471}],"discoverers":[{"name":"Eric Walter Elst","n":167,"site":"La Silla Observatory","top":"France","top_n":36},{"name":"Nikolai Chernykh","n":79,"site":"Crimean Astrophysical Observatory","top":"Russia","top_n":39},{"name":"Purple Mountain Observatory","n":75,"site":"Purple Mountain Observatory","top":"China","top_n":74},{"name":"Takao Kobayashi","n":63,"site":"Ōizumi Observatory","top":"Japan","top_n":61},{"name":"Uppsala–ESO Survey of Asteroids and Comets","n":60,"site":"La Silla Observatory","top":"Sweden","top_n":58},{"name":"Yrjö Väisälä","n":56,"site":"Iso-Heikkilä Observatory","top":"Finland","top_n":47},{"name":"Cornelis Johannes van Houten; Ingrid van Houten-Groeneveld; Tom Gehrels","n":55,"site":"Palomar Observatory","top":"Germany","top_n":21},{"name":"Tsutomu Seki","n":48,"site":"Geisei observatory","top":"Japan","top_n":41},{"name":"Cyril V. Jackson","n":44,"site":"Union Observatory","top":"South Africa","top_n":15},{"name":"Freimut Börngen","n":43,"site":"Karl Schwarzschild Observatory","top":"Germany","top_n":33}],"elst":{"n":167,"fr":36,"be":16,"site":"La Silla Observatory"},"observatories_named":{"n":82,"own":26},"kind_dist":{"town":471,"region":639,"country":1390,"water":843,"nature":389,"inst":579,"other":210},"jp":{"n":421,"home_pct":92.48,"w100_pct":46.12,"top_site":"Ōizumi Observatory"},"cz":{"n":104,"home_pct":90.38,"w100_pct":54.81},"it":{"n":135,"home_pct":49.23,"w100_pct":37.69},"se":{"n":83,"home_pct":0.0,"w100_pct":2.86},"fi":{"n":65,"home_pct":100.0,"w100_pct":18.46},"uk":{"n":26,"places":26,"towns":16,"list":[{"asteroid":"758 Mancunia","place":"Manchester","kind":"town","site":"Union Observatory","year":1912,"km":9328},{"asteroid":"1071 Brita","place":"Great Britain","kind":"nature","site":"Simeiz Observatory","year":1924,"km":2811},{"asteroid":"1244 Deira","place":"Kingdom of Deira","kind":"country","site":"Union Observatory","year":1932,"km":9329},{"asteroid":"2531 Cambridge","place":"Cambridge","kind":"town","site":"Anderson Mesa Station","year":1980,"km":8270},{"asteroid":"2830 Greenwich","place":"Royal Observatory","kind":"inst","site":"Anderson Mesa Station","year":1980,"km":8313},{"asteroid":"3009 Coventry","place":"Coventry","kind":"town","site":"Crimean Astrophysical Observatory","year":1973,"km":2719},{"asteroid":"3858 Dorchester","place":"Dorchester","kind":"town","site":"Brorfelde Observatory","year":1986,"km":1084},{"asteroid":"4206 Verulamium","place":"Verulamium","kind":"town","site":"La Silla Observatory","year":1986,"km":11306},{"asteroid":"5677 Aberdonia","place":"University of Aberdeen","kind":"inst","site":"Lowell Observatory","year":1987,"km":7824},{"asteroid":"5805 Glasgow","place":"Glasgow","kind":"town","site":"Lowell Observatory","year":1985,"km":7798},{"asteroid":"6939 Lestone","place":"Leighton Buzzard","kind":"town","site":"Mount Wilson Observatory","year":1952,"km":8672},{"asteroid":"7603 Salopia","place":"Shropshire","kind":"region","site":"Church Stretton","year":1995,"km":11},{"asteroid":"8283 Edinburgh","place":"Edinburgh","kind":"town","site":"Siding Spring Observatory","year":1991,"km":16524},{"asteroid":"8380 Tooting","place":"Tooting","kind":"town","site":"Palomar Observatory","year":1992,"km":8751},{"asteroid":"8837 London","place":"London","kind":"town","site":"La Silla Observatory","year":1989,"km":11305},{"asteroid":"8849 Brighton","place":"Brighton","kind":"town","site":"La Silla Observatory","year":1990,"km":11263},{"asteroid":"9325 Stonehenge","place":"Stonehenge","kind":"inst","site":"La Silla Observatory","year":1989,"km":11186},{"asteroid":"9767 Midsomer Norton","place":"Midsomer Norton","kind":"town","site":"Siding Spring Observatory","year":1992,"km":16796},{"asteroid":"10501 Ardmacha","place":"Armagh","kind":"town","site":"Palomar Observatory","year":1987,"km":8209},{"asteroid":"10502 Armaghobs","place":"Armagh Observatory","kind":"inst","site":"Palomar Observatory","year":1987,"km":8209},{"asteroid":"10515 Old Joe","place":"Joseph Chamberlain Memorial Clock Tower","kind":"inst","site":"Stakenbridge observatory","year":1989,"km":16},{"asteroid":"11626 Church Stretton","place":"Church Stretton","kind":"town","site":"Church Stretton","year":1996,"km":0},{"asteroid":"28220 York","place":"York","kind":"town","site":"Kleť Observatory","year":1998,"km":1203},{"asteroid":"69423 Openuni","place":"The Open University","kind":"inst","site":"Astronomical Observatory of Farra d'Isonzo","year":1996,"km":1238},{"asteroid":"100604 Lundy","place":"Lundy","kind":"town","site":"Royal Observatory of Belgium","year":1997,"km":633},{"asteroid":"129092 Snowdonia","place":"Snowdon","kind":"nature","site":"Haleakalā Observatory","year":2004,"km":11384}],"home":["Shropshire","Joseph Chamberlain Memorial Clock Tower","Church Stretton"]},"church_stretton":{"n":3,"places":["Church Stretton","Shropshire"]},"multi_towns":[{"place":"Ven","country":"Sweden","n":3},{"place":"Osaka","country":"Japan","n":3},{"place":"Leiden","country":"Netherlands","n":2},{"place":"Goldstone Deep Space Communications Complex","country":"United States","n":2},{"place":"Bologna","country":"Italy","n":2},{"place":"Utrecht","country":"Netherlands","n":2},{"place":"Gdańsk","country":"Poland","n":2},{"place":"People's Republic of China","country":"China","n":2}],"kind_order":["town","region","country","water","nature","inst","other"],"kind_cols":{"town":"#A3261B","region":"#E0A11B","country":"#7B57A8","water":"#2F5FA7","nature":"#55803A","inst":"#2B2119","other":"#8C8478","myth":"#BBB3A6"},"checks":{"person_majority":true,"japan_top":true}};
+const fmt = n => n == null || n === "" ? "n/a" : Math.round(n).toLocaleString("en-GB");
+const esc = s => String(s ?? "").replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+const $ = id => document.getElementById(id);
+const tip = $("tip");
+function showTip(h, x, y) { tip.innerHTML = h; tip.style.display = "block"; const w = tip.offsetWidth; x = Math.max(w / 2 + 8, Math.min(innerWidth - w / 2 - 8, x)); tip.style.left = x + scrollX + "px"; tip.style.top = y + scrollY + "px"; }
+function hideTip() { tip.style.display = "none"; }
+document.addEventListener("click", e => { if (!e.target.closest("svg")) hideTip(); });
+const NS = "http://www.w3.org/2000/svg";
+const el = (t, a, p) => { const e = document.createElementNS(NS, t); for (const k in a) e.setAttribute(k, a[k]); if (p) p.appendChild(e); return e; };
+const lbl = (svg, x, y, s, cls = "lab", anchor = "start") => { const t = el("text", { x, y, class: cls, "text-anchor": anchor }, svg); t.textContent = s; return t; };
+const hov = (n, h) => { n.addEventListener("mousemove", ev => showTip(h, ev.clientX, ev.clientY)); n.addEventListener("mouseleave", hideTip); n.addEventListener("click", ev => { ev.stopPropagation(); showTip(h, ev.clientX, ev.clientY); }); };
+const redraws = [];
+function resp(box, render) { let last = 0; const go = force => { const w = Math.max(280, Math.round(box.clientWidth)); if (!force && Math.abs(w - last) < 4) return; last = w; box.innerHTML = ""; render(w, w < 560); }; new ResizeObserver(() => go()).observe(box); go(); redraws.push(() => go(true)); }
+const isDark = () => { const r = document.documentElement; return r.dataset.theme ? r.dataset.theme === "dark" : matchMedia("(prefers-color-scheme: dark)").matches; };
+const css = v => getComputedStyle(document.documentElement).getPropertyValue(v).trim();
+const KO = R.kind_order, KC = R.kind_cols, KN = Object.fromEntries(KO.map(k => [k, R.kinds[k].name]));
+const STAR = (c = "#2B2119", s = 12) => `<svg class="star" viewBox="0 0 12 12" width="${s}" height="${s}"><path d="M6 .6l1.6 3.4 3.7.4-2.8 2.5.8 3.7L6 8.7 2.7 10.6l.8-3.7L.7 4.4l3.7-.4z" fill="${c}" stroke="#F6EED8" stroke-width=".8"/></svg>`;
+
+(function () {
+  const g = $("heroMark");
+  el("path", { d: "M20 30 C40 18 70 14 96 22", stroke: "currentColor", "stroke-width": 1.4, fill: "none", "stroke-dasharray": "3 4" }, g);
+  el("path", { d: "M84 14 l9 2 6 8 -3 9 -10 3 -8 -6 -1 -9z", fill: "#B9AC8E", stroke: "currentColor", "stroke-width": 2 }, g);
+  el("circle", { cx: 88, cy: 24, r: 2.2, fill: "none", stroke: "currentColor", "stroke-width": 1.2 }, g);
+  el("path", { d: "M10 104 Q60 92 110 104", stroke: "currentColor", "stroke-width": 2.6, fill: "none" }, g);
+  el("path", { d: "M26 98 v-14 l6 -6 6 6 v14 M44 99 v-20 h10 v20 M60 98 v-12 l8 -8 8 8 v12", stroke: "currentColor", "stroke-width": 2, fill: "#EFE2BF" }, g);
+  el("path", { d: "M64 76 Q76 40 88 30", stroke: "#A3261B", "stroke-width": 1.8, fill: "none", "stroke-dasharray": "4 3" }, g);
+  el("circle", { cx: 64, cy: 78, r: 3.2, fill: "#A3261B" }, g);
+})();
+
+/* ---------- charts ---------- */
+function kindChart() {
+  resp($("kindChart"), (w, sm) => {
+    const ks = KO.filter(k => R.kinds[k].n), tot = ks.reduce((a, k) => a + R.kinds[k].n, 0), per = sm ? 2 : 3, h = 54 + Math.ceil(ks.length / per) * 20;
+    const svg = el("svg", { viewBox: `0 0 ${w} ${h}`, role: "img", "aria-label": "Stacked bar of place namings by kind" }, $("kindChart")); let x = 0;
+    ks.forEach(k => { const v = R.kinds[k].n, ww = w * v / tot; const r = el("rect", { x, y: 4, width: Math.max(1, ww - 1), height: 36, fill: KC[k] }, svg);
+      if (ww > 40) lbl(svg, x + 5, 27, Math.round(100 * v / tot) + "%", "lab s w"); hov(r, `<b>${esc(KN[k])}</b><br>${fmt(v)} namings, ${R.kinds[k].pct.toFixed(1)}%`); x += ww; });
+    ks.forEach((k, i) => { const cx = (i % per) * (w / per), cy = 58 + Math.floor(i / per) * 20; el("rect", { x: cx, y: cy - 9, width: 11, height: 11, fill: KC[k] }, svg); lbl(svg, cx + 16, cy, KN[k].split(",")[0].replace("Observatories", "Institutions"), "lab s"); });
+  });
+}
+function hbars(box, panels, title) {
+  resp(box, (w, sm) => {
+    const rh = 22, lw = 112, two = !sm, rows = Math.max(...panels.map(p => p.rows.length));
+    const h = two ? rows * rh + 34 : panels.reduce((a, p) => a + p.rows.length * rh + 40, 0);
+    const svg = el("svg", { viewBox: `0 0 ${w} ${h}`, role: "img", "aria-label": title }, box);
+    panels.forEach((p, k) => { const x0 = two ? k * w / 2 + lw : lw, x1 = two ? (k + 1) * w / 2 - 50 : w - 50, y0 = two ? 0 : panels.slice(0, k).reduce((a, q) => a + q.rows.length * rh + 40, 0);
+      lbl(svg, x0 - lw, y0 + 15, p.title, "lab b"); const mx = Math.max(...p.rows.map(r => r.v));
+      p.rows.forEach((r, i) => { const y = y0 + 24 + i * rh, ww = (x1 - x0) * r.v / mx;
+        lbl(svg, x0 - 6, y + 14, r.label, "lab s", "end"); const b = el("rect", { x: x0, y: y + 3, width: Math.max(1, ww), height: rh - 7, fill: p.c, rx: 2 }, svg);
+        lbl(svg, x0 + ww + 5, y + 14, r.txt, "lab s b"); hov(b, r.tip); }); });
+  });
+}
+const short = c => c.replace("United States", "US").replace("United Kingdom", "UK").replace("Czech Republic", "Czechia");
+function ctyChart() {
+  hbars($("ctyChart"), [{ title: "Place namings", c: "#A3261B", rows: R.countries.slice(0, 12).map(r => ({ label: short(r.country), v: r.n, txt: fmt(r.n), tip: `<b>${esc(r.country)}</b><br>${r.n} places, ${r.pct.toFixed(1)}%<br>${r.per_m.toFixed(2)} per million people` })) },
+    { title: "Per million people", c: "#2F5FA7", rows: R.per_m.slice(0, 12).map(r => ({ label: short(r.country), v: r.per_m, txt: r.per_m.toFixed(1), tip: `<b>${esc(r.country)}</b><br>${r.n} places, ${r.pop_m} million people` })) }], "Bar charts of place namings by country, in total and per million people");
+}
+function distChart() {
+  resp($("distChart"), (w, sm) => {
+    const edges = [0, 10, 25, 50, 100, 250, 500, 1000, 2500, 5000, 10000, 20100], lab = ["<10", "10", "25", "50", "100", "250", "500", "1,000", "2,500", "5,000", "10,000+"];
+    const n = new Array(edges.length - 1).fill(0); ROWS.forEach(r => { if (r.km == null) return; for (let i = 0; i < n.length; i++) if (r.km >= edges[i] && r.km < edges[i + 1]) { n[i]++; break; } });
+    const h = 230, m = { l: 36, b: 40, t: 10 }, svg = el("svg", { viewBox: `0 0 ${w} ${h}`, role: "img", "aria-label": "Histogram of distances from observatory to named place" }, $("distChart"));
+    const mx = Math.max(...n), cw = (w - m.l - 4) / n.length;
+    for (let v = 0; v <= mx; v += 100) { const y = h - m.b - (h - m.t - m.b) * v / mx; el("line", { x1: m.l, x2: w, y1: y, y2: y, stroke: css("--rule") }, svg); lbl(svg, m.l - 5, y + 4, v, "lab s m", "end"); }
+    n.forEach((v, i) => { const hh = (h - m.t - m.b) * v / mx, x = m.l + i * cw; const r = el("rect", { x: x + 2, y: h - m.b - hh, width: cw - 4, height: hh, fill: edges[i + 1] <= 100 ? "#A3261B" : "#B9AC8E" }, svg);
+      hov(r, `<b>${fmt(edges[i])} to ${fmt(edges[i + 1] > 20000 ? 20000 : edges[i + 1])} km</b><br>${v} places`); if (!sm || i % 2 === 0) lbl(svg, x + cw / 2, h - m.b + 15, lab[i], "lab s m", "middle"); });
+    lbl(svg, m.l + (w - m.l) / 2, h - 6, "kilometres from observatory to place (red: under 100 km)", "lab s m", "middle");
+  });
+}
+function obsTable() {
+  const t = $("obsTable");
+  t.innerHTML = `<thead><tr><th>Observatory</th><th>Country</th><th class="r">Places</th><th class="r">Own country</th><th class="r">Median km</th><th class="r">Within 100 km</th></tr></thead><tbody>` +
+    R.obs.map((o, i) => `<tr data-k="${i}"><td>${STAR()}${esc(o.site)}</td><td>${esc(o.country)}</td><td class="r"><b>${o.n}</b></td><td class="r">${Math.round(o.same_pct)}%</td><td class="r">${fmt(o.median_km)}</td><td class="r">${Math.round(o.w100_pct)}%</td></tr>`).join("") + `</tbody>`;
+  t.querySelectorAll("tr[data-k]").forEach(r => r.onclick = () => { const o = R.obs[+r.dataset.k], i = SITE.obs.findIndex(x => x[0] === o.site); toMap(); setTimeout(() => pickObs(i, true), 350); });
+}
+function ukTable() {
+  const t = $("ukTable");
+  t.innerHTML = `<thead><tr><th>Asteroid</th><th>Place</th><th>Found at</th><th class="r">Year</th><th class="r">km</th></tr></thead><tbody>` +
+    R.uk.list.map((u, i) => `<tr data-k="${i}"><td>${esc(u.asteroid)}</td><td><i style="display:inline-block;width:9px;height:9px;border-radius:50%;background:${KC[u.kind]};margin-right:5px"></i>${esc(u.place)}</td><td>${esc(u.site || "")}</td><td class="r">${u.year ?? ""}</td><td class="r">${u.km == null ? "" : fmt(u.km)}</td></tr>`).join("") + `</tbody>`;
+  t.querySelectorAll("tr[data-k]").forEach(r => r.onclick = () => { const u = R.uk.list[+r.dataset.k]; const x = ROWS.find(q => q.name === u.asteroid && q.place === u.place); if (x) { toMap(); setTimeout(() => pickPlace(x.nid, true), 350); } });
+}
+
+/* ---------- the map ---------- */
+let SITE = null, ROWS = [], PL = {}, map = null, ready = false;
+const S = { off: new Set(), obs: null, place: null };
+const LYDEF = { lines: true, obs: true, names: true, mountains: true, forests: true, rivers: true, names_e: true, borders: true, modern: false };
+const LY = { ...LYDEF };
+try { Object.assign(LY, JSON.parse(localStorage.getItem("at_layers") || "{}")); } catch (e) {}
+const saveLY = () => { try { localStorage.setItem("at_layers", JSON.stringify(LY)); } catch (e) {} };
+const toMap = () => $("atlas").scrollIntoView({ behavior: "smooth", block: "start" });
+
+function gc(a, b, n = 32) {   // great circle points, longitudes unwrapped so the line crosses the date line smoothly
+  const r = Math.PI / 180, [l1, p1] = [a[0] * r, a[1] * r], [l2, p2] = [b[0] * r, b[1] * r];
+  const v1 = [Math.cos(p1) * Math.cos(l1), Math.cos(p1) * Math.sin(l1), Math.sin(p1)], v2 = [Math.cos(p2) * Math.cos(l2), Math.cos(p2) * Math.sin(l2), Math.sin(p2)];
+  const d = Math.acos(Math.max(-1, Math.min(1, v1[0] * v2[0] + v1[1] * v2[1] + v1[2] * v2[2])));
+  if (d < 1e-6) return [a, b];
+  const out = []; let prev = null;
+  for (let i = 0; i <= n; i++) { const t = i / n, s1 = Math.sin((1 - t) * d) / Math.sin(d), s2 = Math.sin(t * d) / Math.sin(d);
+    const x = s1 * v1[0] + s2 * v2[0], y = s1 * v1[1] + s2 * v2[1], z = s1 * v1[2] + s2 * v2[2];
+    let lon = Math.atan2(y, x) / r; const lat = Math.atan2(z, Math.hypot(x, y)) / r;
+    if (prev != null) { while (lon - prev > 180) lon -= 360; while (lon - prev < -180) lon += 360; }
+    prev = lon; out.push([lon, lat]); }
+  return out;
+}
+function build() {
+  const c = SITE.cols;
+  ROWS = SITE.rows.map((r, i) => Object.assign(Object.fromEntries(c.map((k, j) => [k, r[j]])), { i }));
+  ROWS.forEach(r => { const q = PL[r.nid] || (PL[r.nid] = { nid: r.nid, name: r.place, kind: r.kind, lon: r.lon, lat: r.lat, country: r.country, rows: [] }); q.rows.push(r.i); });
+}
+const vis = r => !S.off.has(r.kind);
+function placeGeo() { return { type: "FeatureCollection", features: Object.values(PL).filter(q => vis(q)).map(q => ({ type: "Feature", properties: { id: q.nid, k: q.kind, c: KC[KO[q.kind]], n: q.rows.length, nm: q.name, sel: (S.place === q.nid || (S.obs != null && q.rows.some(i => ROWS[i].obs === S.obs))) ? 1 : 0 }, geometry: { type: "Point", coordinates: [q.lon, q.lat] } })) }; }
+function lineGeo() {
+  const fs = [];
+  ROWS.forEach(r => { if (!vis(r) || r.obs < 0) return; const o = SITE.obs[r.obs]; if (o[1] == null) return;
+    const sel = S.place === r.nid || S.obs === r.obs;
+    if ((S.place != null || S.obs != null) && !sel) return;
+    fs.push({ type: "Feature", properties: { c: KC[KO[r.kind]], s: sel ? 1 : 0 }, geometry: { type: "LineString", coordinates: gc([o[1], o[2]], [r.lon, r.lat]) } }); });
+  return { type: "FeatureCollection", features: fs };
+}
+function obsGeo() { return { type: "FeatureCollection", features: SITE.obs.map((o, i) => o[1] == null ? null : ({ type: "Feature", properties: { i, n: o[4], nm: o[0], sel: S.obs === i ? 1 : 0 }, geometry: { type: "Point", coordinates: [o[1], o[2]] } })).filter(Boolean) }; }
+function refresh() { if (!ready) return; map.getSource("pl").setData(placeGeo()); map.getSource("ln").setData(lineGeo()); map.getSource("ob").setData(obsGeo()); side(); }
+function starImage() {
+  const s = 40, c = document.createElement("canvas"); c.width = c.height = s; const x = c.getContext("2d");
+  x.beginPath(); for (let i = 0; i < 10; i++) { const a = -Math.PI / 2 + i * Math.PI / 5, r = i % 2 ? 7.5 : 17; x.lineTo(s / 2 + r * Math.cos(a), s / 2 + r * Math.sin(a)); } x.closePath();
+  x.fillStyle = "#2B2119"; x.strokeStyle = "#F6EED8"; x.lineWidth = 3; x.stroke(); x.fill();
+  return x.getImageData(0, 0, s, s);
+}
+function initMap() {
+  const opts = { workerConfig: { heritage: "", hills: "", places: "" }, mapOptions: { center: [30, 35], zoom: innerWidth < 600 ? 0.5 : 1.2 } };
+  InkMap.create("map", opts).then(m => {
+    map = m; ready = true;
+    const fold = () => map.getContainer().querySelectorAll(".maplibregl-ctrl-attrib.maplibregl-compact").forEach(a => { a.classList.remove("maplibregl-compact-show"); a.removeAttribute("open"); }); map.once("idle", fold); fold();
+    map.addControl(new maplibregl.NavigationControl({ showCompass: false }), "bottom-right");
+    if (InkMap.setWinter) InkMap.setWinter(map, false);
+    ["heritage", "flight", "animals", "farms", "towns", "roads"].forEach(g => { try { InkMap.setGroup(map, g, false); } catch (e) {} });
+    if (InkMap.setSeaTone) InkMap.setSeaTone(map, isDark());
+    map.addImage("obstar", starImage(), { pixelRatio: 2 });
+    map.addSource("ln", { type: "geojson", data: { type: "FeatureCollection", features: [] } });
+    map.addSource("pl", { type: "geojson", data: { type: "FeatureCollection", features: [] }, attribution: "Asteroid names: <a href='https://www.wikidata.org/' target='_blank'>Wikidata</a> (CC0)" });
+    map.addSource("ob", { type: "geojson", data: { type: "FeatureCollection", features: [] } });
+    map.addLayer({ id: "ln", type: "line", source: "ln", layout: { "line-cap": "round" }, paint: { "line-color": ["get", "c"], "line-width": ["case", ["==", ["get", "s"], 1], 1.8, .7], "line-opacity": ["case", ["==", ["get", "s"], 1], .9, .22] } });
+    map.addLayer({ id: "pl", type: "circle", source: "pl", paint: { "circle-radius": ["interpolate", ["linear"], ["zoom"], 0, ["+", 2.2, ["get", "n"]], 5, ["+", 4, ["*", 1.5, ["get", "n"]]], 9, ["+", 7, ["*", 2, ["get", "n"]]]],
+      "circle-color": ["get", "c"], "circle-stroke-color": ["case", ["==", ["get", "sel"], 1], "#A3261B", "#2B2119"], "circle-stroke-width": ["case", ["==", ["get", "sel"], 1], 2.4, .7], "circle-opacity": .92 } });
+    map.addLayer({ id: "ob", type: "symbol", source: "ob", layout: { "icon-image": "obstar", "icon-size": ["interpolate", ["linear"], ["get", "n"], 1, .55, 50, .9, 250, 1.3], "icon-allow-overlap": true, "symbol-sort-key": ["get", "n"] } });
+    map.addLayer({ id: "plname", type: "symbol", source: "pl", minzoom: 4, layout: { "text-field": ["get", "nm"], "text-font": ["Ink Italic"], "text-size": 13, "text-variable-anchor": ["left", "right", "top"], "text-radial-offset": .8 }, paint: { "text-color": "#2B2119", "text-halo-color": "rgba(246,238,216,.95)", "text-halo-width": 1.6 } });
+    map.addLayer({ id: "obname", type: "symbol", source: "ob", minzoom: 3, layout: { "text-field": ["get", "nm"], "text-font": ["Ink Caps"], "text-size": 11.5, "text-anchor": "top", "text-offset": [0, 1] }, paint: { "text-color": "#2B2119", "text-halo-color": "rgba(246,238,216,.95)", "text-halo-width": 1.6 } });
+    map.on("click", "pl", e => { e.preventDefault(); pickPlace(e.features[0].properties.id, false); });
+    map.on("click", "ob", e => { e.preventDefault(); pickObs(e.features[0].properties.i, false); });
+    map.on("click", e => { if (e.defaultPrevented) return; if (S.place != null || S.obs != null) { S.place = null; S.obs = null; refresh(); } });
+    ["pl", "ob"].forEach(l => { map.on("mouseenter", l, () => map.getCanvas().style.cursor = "pointer"); map.on("mouseleave", l, () => map.getCanvas().style.cursor = ""); });
+    layerPanel(); applyLayers(); refresh();
+  }).catch(e => { console.error(e); $("note").textContent = "The map could not load: " + e.message; });
+}
+let pop = null;
+function rowHTML(r) { const o = r.obs >= 0 ? SITE.obs[r.obs] : null;
+  return `<li><b>${esc(r.name)}</b>${r.num && !String(r.name).replace(/[()]/g, "").startsWith(String(r.num)) ? ` <span class="k">(no. ${fmt(r.num)})</span>` : ""}<br><span class="k">Found</span> ${r.year ?? "year unknown"}${o ? ` at <span class="go" data-o="${r.obs}">${esc(o[0])}</span>` : ""}${r.disc ? ` by ${esc(r.disc)}` : ""}${r.km != null ? `<br><span class="k">${fmt(r.km)} km from the place</span>` : ""}<br><a href="https://www.wikidata.org/wiki/${r.aid}" target="_blank" rel="noopener">Asteroid on Wikidata</a></li>`; }
+function placeHTML(q) { return `<b class="t">${esc(q.name)}</b><span class="k">${esc(KN[KO[q.kind]])}${q.country ? " · " + esc(q.country) : ""}</span><ul>${q.rows.map(i => rowHTML(ROWS[i])).join("")}</ul><a href="https://www.wikidata.org/wiki/${q.nid}" target="_blank" rel="noopener">Place on Wikidata</a>`; }
+function wire(n) { if (!n) return; n.querySelectorAll("[data-o]").forEach(x => x.onclick = () => pickObs(+x.dataset.o, true)); n.querySelectorAll("[data-p]").forEach(x => x.onclick = () => pickPlace(x.dataset.p, true)); }
+function pickPlace(nid, fly) {
+  const q = PL[nid]; if (!q) return; if (S.off.has(q.kind)) { S.off.delete(q.kind); syncKinds(); }
+  S.place = nid; S.obs = null; refresh();
+  if (!ready) return;
+  const r0 = ROWS[q.rows[0]], o = r0.obs >= 0 ? SITE.obs[r0.obs] : null;
+  if (fly) { if (o && o[1] != null && r0.km > 300) { const pts = gc([o[1], o[2]], [q.lon, q.lat]); const lo = pts.map(p => p[0]), la = pts.map(p => p[1]); map.fitBounds([[Math.min(...lo), Math.min(...la)], [Math.max(...lo), Math.max(...la)]], { padding: 60, maxZoom: 6, duration: 1000 }); } else map.flyTo({ center: [q.lon, q.lat], zoom: Math.max(map.getZoom(), 6), duration: 1000 }); }
+  if (pop) pop.remove();
+  pop = new maplibregl.Popup({ maxWidth: "300px", focusAfterOpen: false }).setLngLat([q.lon, q.lat]).setHTML(placeHTML(q)).addTo(map); wire(pop.getElement());
+}
+function pickObs(i, fly) {
+  const o = SITE.obs[i]; if (!o) return; S.obs = i; S.place = null; if (pop) pop.remove(); refresh();
+  if (ready && fly && o[1] != null) { const rs = ROWS.filter(r => r.obs === i && vis(r)); const pts = rs.flatMap(r => gc([o[1], o[2]], [r.lon, r.lat], 8));
+    if (pts.length) { const lo = pts.map(p => p[0]), la = pts.map(p => p[1]); map.fitBounds([[Math.min(...lo), Math.max(-75, Math.min(...la))], [Math.max(...lo), Math.min(80, Math.max(...la))]], { padding: 50, maxZoom: 7, duration: 1000 }); } }
+}
+function side() {
+  const sd = $("side");
+  if (S.obs != null) { const o = SITE.obs[S.obs], rs = ROWS.filter(r => r.obs === S.obs && vis(r)).sort((a, b) => (a.km ?? 1e9) - (b.km ?? 1e9));
+    const own = rs.filter(r => r.country && o[3] && r.country.split(" (")[0] === o[3].split(" (")[0]).length;
+    sd.innerHTML = `<button class="btn" id="back" style="min-height:0;padding:5px 8px;margin-bottom:8px">Back to all places</button><h4>Observatory</h4><div class="big">${STAR()}${esc(o[0])}</div><p class="k">${esc(o[3] || "")} · ${rs.length} places named, ${own} in the same country</p><h4>Nearest first</h4><ul>${rs.slice(0, 60).map(r => `<li><span class="go" data-p="${r.nid}">${esc(r.place)}</span> <span class="k">${esc(r.country)}${r.km != null ? ", " + fmt(r.km) + " km" : ""}</span></li>`).join("")}</ul>${rs.length > 60 ? `<p class="k">and ${rs.length - 60} more</p>` : ""}`;
+    $("back").onclick = () => { S.obs = null; refresh(); }; wire(sd); return; }
+  if (S.place != null) { const q = PL[S.place]; sd.innerHTML = `<button class="btn" id="back" style="min-height:0;padding:5px 8px;margin-bottom:8px">Back to all places</button>` + placeHTML(q).replace('<b class="t">', '<div class="big">').replace("</b>", "</div>"); $("back").onclick = () => { S.place = null; if (pop) pop.remove(); refresh(); }; wire(sd); return; }
+  const vs = Object.values(PL).filter(vis);
+  sd.innerHTML = `<h4>Showing</h4><div class="big">${fmt(vs.length)} places</div><p class="k">${fmt(vs.reduce((a, q) => a + q.rows.length, 0))} asteroids</p><h4>Observatories that named most</h4><ul>${SITE.obs.slice(0, 12).map((o, i) => `<li>${STAR()}<span class="go" data-o="${i}">${esc(o[0])}</span> <span class="k">${o[4]}</span></li>`).join("")}</ul><p class="k">Click a place or a star on the map.</p>`;
+  wire(sd);
+}
+function legend() { $("legend").innerHTML = KO.filter(k => R.kinds[k].n).map(k => `<span><i style="background:${KC[k]}"></i>${esc(KN[k])}</span>`).join("") + `<span>${STAR()}Discovery site (observatory)</span>`; }
+function syncKinds() { document.querySelectorAll("#kindRow .btn").forEach(b => b.setAttribute("aria-pressed", !S.off.has(+b.dataset.k))); refresh(); }
+function layerPanel() {
+  const d = document.createElement("div"); d.className = "maplibregl-ctrl lyrCtl";
+  d.innerHTML = `<button class="lyrBtn" aria-expanded="false">Map layers</button><div class="lyrPanel" hidden><h5>Asteroids</h5><label><input type="checkbox" data-k="lines"> Lines to observatories</label><label><input type="checkbox" data-k="obs"> Observatories</label><label><input type="checkbox" data-k="names"> Names of places and observatories</label><h5>The inked map</h5><label><input type="checkbox" data-k="mountains"> Ink mountains and hills</label><label><input type="checkbox" data-k="forests"> Forests and moor</label><label><input type="checkbox" data-k="rivers"> Rivers and lakes</label><label><input type="checkbox" data-k="names_e"> Place names</label><label><input type="checkbox" data-k="borders"> Borders</label><label><input type="checkbox" data-k="modern"> Plain modern map</label><button class="reset">Reset layers</button></div>`;
+  ["click", "dblclick", "mousedown", "touchstart", "wheel"].forEach(t => d.addEventListener(t, e => e.stopPropagation(), { passive: t !== "click" }));
+  map.addControl({ onAdd() { return d; }, onRemove() { d.remove(); } }, "top-left");
+  const btn = d.querySelector(".lyrBtn"), pan = d.querySelector(".lyrPanel");
+  btn.onclick = () => { const o = pan.hidden; pan.hidden = !o; btn.setAttribute("aria-expanded", o); };
+  const sync = () => pan.querySelectorAll("[data-k]").forEach(i => i.checked = !!LY[i.dataset.k]);
+  pan.querySelectorAll("[data-k]").forEach(i => i.addEventListener("change", () => { LY[i.dataset.k] = i.checked; saveLY(); applyLayers(); }));
+  pan.querySelector(".reset").onclick = () => { Object.assign(LY, LYDEF); saveLY(); sync(); applyLayers(); }; sync();
+}
+function applyLayers() {
+  if (!ready) return; const v = x => x ? "visible" : "none";
+  map.setLayoutProperty("ln", "visibility", v(LY.lines)); map.setLayoutProperty("ob", "visibility", v(LY.obs));
+  map.setLayoutProperty("plname", "visibility", v(LY.names)); map.setLayoutProperty("obname", "visibility", v(LY.names && LY.obs));
+  const m = LY.modern;
+  [["mountains", LY.mountains], ["forests", LY.forests], ["rivers", LY.rivers], ["names", LY.names_e], ["borders", LY.borders]].forEach(([g, on]) => { try { InkMap.setGroup(map, g, on && !(m && ["mountains", "forests"].includes(g))); } catch (e) {} });
+  try { InkMap.setGroup(map, "paper", !m); InkMap.setGroup(map, "modern", m); InkMap.setGroup(map, "coast", !m); } catch (e) {}
+}
+function search() {
+  const q = $("q"), sug = $("sug"), norm = s => String(s || "").normalize("NFD").replace(/[̀-ͯ]/g, "").toLowerCase(), idx = [];
+  Object.values(PL).forEach(p => idx.push([norm(p.name), `${esc(p.name)} <span>${esc(KN[KO[p.kind]].split(",")[0].toLowerCase())}, ${esc(p.country)}</span>`, () => pickPlace(p.nid, true)]));
+  ROWS.forEach(r => { if (norm(r.name) !== norm(r.place)) idx.push([norm(r.name), `${esc(r.name)} <span>asteroid, after ${esc(r.place)}</span>`, () => pickPlace(r.nid, true)]); });
+  SITE.obs.forEach((o, i) => idx.push([norm(o[0]), `${esc(o[0])} <span>observatory, ${o[4]} places</span>`, () => pickObs(i, true)]));
+  let hits = [], sel = -1;
+  const show = () => { sug.innerHTML = hits.map((h, i) => `<li role="option" aria-selected="${i === sel}" data-i="${i}">${h[1]}</li>`).join(""); sug.style.display = hits.length ? "block" : "none"; sug.querySelectorAll("li").forEach(li => li.onmousedown = e => { e.preventDefault(); go(+li.dataset.i); }); };
+  const go = i => { const h = hits[i]; if (!h) return; sug.style.display = "none"; q.blur(); toMap(); setTimeout(h[2], 300); };
+  q.addEventListener("input", () => { const s = norm(q.value.trim()); sel = -1; if (s.length < 2) { hits = []; show(); return; } hits = idx.filter(x => x[0].replace(/^\(?\d+\)?\s*/, "").startsWith(s)).concat(idx.filter(x => !x[0].replace(/^\(?\d+\)?\s*/, "").startsWith(s) && x[0].includes(s))).slice(0, 12); show(); });
+  q.addEventListener("keydown", e => { if (e.key === "ArrowDown") { sel = Math.min(hits.length - 1, sel + 1); show(); e.preventDefault(); } else if (e.key === "ArrowUp") { sel = Math.max(0, sel - 1); show(); e.preventDefault(); } else if (e.key === "Enter") go(sel < 0 ? 0 : sel); else if (e.key === "Escape") sug.style.display = "none"; });
+  q.addEventListener("blur", () => setTimeout(() => sug.style.display = "none", 150));
+}
+function boot() {
+  kindChart(); ctyChart(); legend();
+  KO.forEach((k, i) => { if (!R.kinds[k].n) return; const b = document.createElement("button"); b.className = "btn"; b.dataset.k = i; b.setAttribute("aria-pressed", true); b.innerHTML = `<i style="background:${KC[k]}"></i>${esc(KN[k].split(",")[0].replace("Observatories", "Institutions"))}`;
+    b.onclick = () => { S.off.has(i) ? S.off.delete(i) : S.off.add(i); syncKinds(); }; $("kindRow").appendChild(b); });
+  fetch("data/site.json").then(r => r.json()).then(s => { SITE = s; build(); distChart(); obsTable(); ukTable(); search(); side();
+    if (!window.maplibregl) { $("note").textContent = "The map library did not load."; return; } initMap(); }).catch(e => { console.error(e); $("note").textContent = "The page data did not load."; });
+}
+$("theme").onclick = () => { const r = document.documentElement; r.dataset.theme = isDark() ? "light" : "dark"; redraws.forEach(f => f()); if (map && InkMap.setSeaTone) InkMap.setSeaTone(map, isDark()); };
+boot();
+</script>
+<!-- map-fullscreen v1 -->
+<style id="mfs-style">
+.mfs-btn{position:absolute;top:10px;right:10px;z-index:1001;width:34px;height:34px;border:2px solid rgba(0,0,0,.25);border-radius:4px;background:#fff;color:#222;cursor:pointer;display:flex;align-items:center;justify-content:center;padding:0;box-shadow:0 1px 4px rgba(0,0,0,.2)}
+.mfs-btn:hover{background:#f2f2f2}
+.mfs-btn svg{width:18px;height:18px}
+.mfs-host.mfs-btn-left .mfs-btn{right:auto;left:54px}
+.mfs-fake{position:fixed!important;inset:0!important;width:100vw!important;height:100vh!important;height:100dvh!important;max-width:none!important;max-height:none!important;margin:0!important;z-index:100000!important;border-radius:0!important}
+html.mfs-lock,html.mfs-lock body{overflow:hidden!important}
+:fullscreen.mfs-host{width:100vw!important;height:100vh!important;max-width:none!important;max-height:none!important;margin:0!important;border-radius:0!important}
+</style>
+<script id="mfs-script">
+(function(){
+  var ICON_OPEN='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5"/></svg>';
+  var ICON_CLOSE='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M9 4v5H4M15 4v5h5M9 20v-5H4M15 20v-5h5"/></svg>';
+  function poke(){setTimeout(function(){window.dispatchEvent(new Event('resize'));},60);setTimeout(function(){window.dispatchEvent(new Event('resize'));},400);}
+  function realFS(){return document.fullscreenElement||document.webkitFullscreenElement;}
+  function add(el){
+    if(el.__mfs)return; el.__mfs=1;
+    var cs=getComputedStyle(el); if(cs.position==='static')el.style.position='relative';
+    el.classList.add('mfs-host');
+    // avoid clashing with a top-right Leaflet control (e.g. "Map layers")
+    var tr=el.querySelector('.leaflet-top.leaflet-right');
+    if(tr&&tr.children.length){ el.classList.add('mfs-btn-left'); }
+    var b=document.createElement('button'); b.type='button'; b.className='mfs-btn';
+    b.title='Full screen map'; b.setAttribute('aria-label','Full screen map'); b.innerHTML=ICON_OPEN;
+    ['click','dblclick','mousedown','touchstart','wheel'].forEach(function(t){b.addEventListener(t,function(e){e.stopPropagation();},{passive:t!=='click'});});
+    function setIcon(on){b.innerHTML=on?ICON_CLOSE:ICON_OPEN;b.title=on?'Exit full screen':'Full screen map';b.setAttribute('aria-label',b.title);}
+    function exitFake(){el.classList.remove('mfs-fake');document.documentElement.classList.remove('mfs-lock');setIcon(false);poke();}
+    b.addEventListener('click',function(e){
+      e.preventDefault();
+      if(el.classList.contains('mfs-fake')){exitFake();return;}
+      if(realFS()){(document.exitFullscreen||document.webkitExitFullscreen).call(document);return;}
+      var req=el.requestFullscreen||el.webkitRequestFullscreen;
+      if(req){ try{ var p=req.call(el); if(p&&p.catch)p.catch(function(){el.classList.add('mfs-fake');document.documentElement.classList.add('mfs-lock');setIcon(true);poke();}); }catch(err){el.classList.add('mfs-fake');document.documentElement.classList.add('mfs-lock');setIcon(true);poke();} }
+      else { el.classList.add('mfs-fake');document.documentElement.classList.add('mfs-lock');setIcon(true);poke(); }
+    });
+    document.addEventListener('keydown',function(e){if(e.key==='Escape'&&el.classList.contains('mfs-fake'))exitFake();});
+    ['fullscreenchange','webkitfullscreenchange'].forEach(function(t){document.addEventListener(t,function(){setIcon(realFS()===el);poke();});});
+    el.appendChild(b);
+  }
+  function scan(){
+    var els=document.querySelectorAll('[data-fullscreen-map], .leaflet-container, .maplibregl-map, .mapboxgl-map');
+    els.forEach(function(el){
+      if(el.closest('.mfs-host')&&!el.classList.contains('mfs-host'))return;
+      var r=el.getBoundingClientRect(); if(r.width<200||r.height<150)return;
+      add(el);
+    });
+  }
+  function start(){scan(); var n=0; var t=setInterval(function(){scan(); if(++n>20)clearInterval(t);},500);}
+  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',start); else start();
+})();
+</script>
+<!-- /map-fullscreen -->
+
+<script src="https://maps.tristanhotham.com/assets/site-nav.js" defer></script>
+</body>
+</html>
