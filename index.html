@@ -323,7 +323,7 @@ function ukTable() {
 /* ---------- the map ---------- */
 let SITE = null, ROWS = [], PL = {}, map = null, ready = false;
 const S = { off: new Set(), obs: null, place: null };
-const LYDEF = { lines: true, obs: true, names: true, mountains: true, forests: true, rivers: true, names_e: true, borders: true, modern: true };
+const LYDEF = { lines: true, obs: true, names: true, mountains: false, forests: false, rivers: true, names_e: true, borders: true, modern: true };
 const LY = { ...LYDEF };
 try { Object.assign(LY, JSON.parse(localStorage.getItem("at_layers") || "{}")); } catch (e) {}
 const saveLY = () => { try { localStorage.setItem("at_layers", JSON.stringify(LY)); } catch (e) {} };
